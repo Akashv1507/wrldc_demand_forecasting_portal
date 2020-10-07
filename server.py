@@ -4,7 +4,9 @@ This is the web server to display real time demand vs forecasted demand.
 from src.config.appConfig import getConfig
 from flask import Flask, request, jsonify, render_template
 import datetime as dt
-
+from typing import List, Tuple, TypedDict, Union
+from src.services.demandDataFetcher import DemandFetchFromApi
+from src.services.forecastedDemandFetcher import ForecastedDemandFetchRepo
 
 app = Flask(__name__)
 
@@ -17,16 +19,23 @@ tokenUrl: str = appConfig['tokenUrl']
 apiBaseUrl: str = appConfig['apiBaseUrl']
 clientId: str = appConfig['clientId']
 clientSecret: str = appConfig['clientSecret']
+conString: str = appConfig['con_string_mis_warehouse']
 
-# tempHumFetcher = TempHumApiFetcher(
-#     tokenUrl, apiBaseUrl, clientId, clientSecret)
+obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
+obj_forecastedDemandFetchRepo = ForecastedDemandFetchRepo(conString)
 
-# @app.route('/api/<measId>/<startTime>/<endTime>')
-# def deviceDataApi(measId: str, startTime: str, endTime: str):
-#     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
-#     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
-#     resData = tempHumFetcher.fetchData(measId, startDt, endDt)
-#     return jsonify(resData)
+@app.route('/api/<entityTag>/<startTime>/<endTime>')
+def deviceDataApi(entityTag: str, startTime: str, endTime: str):
+    startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
+    endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
+    actualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
+
+    #setting end time to last minute of a day in case of forecasted demand fetch
+    endDt = endDt.replace(hour=0, minute=0, second=0)
+    endDt = endDt + dt.timedelta(hours= 23, minutes=59)
+    print(startDt,endDt)
+    forecastedDemandData:  List[Union[dt.datetime, float]] = obj_forecastedDemandFetchRepo.fetchForecastedDemand(startDt, endDt, entityTag)
+    return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData} )
 
 @app.route('/')
 def home():
