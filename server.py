@@ -33,7 +33,7 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
     #setting end time to last minute of a day in case of forecasted demand fetch
     endDt = endDt.replace(hour=0, minute=0, second=0)
     endDt = endDt + dt.timedelta(hours= 23, minutes=59)
-    print(startDt,endDt)
+    
     forecastedDemandData:  List[Union[dt.datetime, float]] = obj_forecastedDemandFetchRepo.fetchForecastedDemand(startDt, endDt, entityTag)
     return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData} )
 
