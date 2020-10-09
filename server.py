@@ -7,6 +7,7 @@ import datetime as dt
 from typing import List, Tuple, TypedDict, Union
 from src.services.demandDataFetcher import DemandFetchFromApi
 from src.services.forecastedDemandFetcher import ForecastedDemandFetchRepo
+from src.services.biasErrorCalculator import calculateBiasError
 
 app = Flask(__name__)
 
@@ -37,7 +38,9 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
     endDt = endDt + dt.timedelta(hours= 23, minutes=59)
     
     forecastedDemandData:  List[Union[dt.datetime, float]] = obj_forecastedDemandFetchRepo.fetchForecastedDemand(startDt, endDt, entityTag)
-    return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData} )
+
+    percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(actualDemandData, forecastedDemandData)
+    return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData, 'percentageBiasError': percentageBiasError} )
 
 @app.route('/')
 def home():
