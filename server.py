@@ -26,8 +26,10 @@ obj_forecastedDemandFetchRepo = ForecastedDemandFetchRepo(conString)
 
 @app.route('/api/<entityTag>/<startTime>/<endTime>')
 def deviceDataApi(entityTag: str, startTime: str, endTime: str):
+   
     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
+    
     actualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
 
     #setting end time to last minute of a day in case of forecasted demand fetch

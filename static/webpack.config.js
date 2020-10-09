@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
     // multiple entry points - https://github.com/webpack/docs/wiki/multiple-entry-points
     entry: {
-        main: ['babel-polyfill', path.resolve(__dirname, 'src/index.ts')]
+        mains: ['babel-polyfill', path.resolve(__dirname, 'src/index.ts')]
     },
 
     output: {

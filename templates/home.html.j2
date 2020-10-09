@@ -5,13 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WRLDC Actual Demand vs Forecasted Demand</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" />
 </head>
 
 <body>
     <div>
-        <label for="daysOffsetInp">Days Offset - </label>
-        <input type="number" id="daysOffsetInp" value="2" />
-        <button id="refreshBtn">Refresh</button>
+        <div class="input-group mb-3 container mt-3" >
+        <div class="input-group-prepend">
+        <span class="input-group-text text-primary" id="inputGroup-sizing-default" >Days Offset - </span>
+        </div>
+        <input type="number"  id="daysOffsetInp" value="1" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        <div class="input-group-append">
+        <button id="refreshBtn" type="button" class="btn btn-outline-primary">Refresh</button>
+        </div>
+        </div>
+        </div>
+        
         <div id='wrTotalDiv'></div>
         <br />
         <div id='mahDiv'></div>
@@ -24,14 +33,14 @@
         <br />
         <div id='goaDiv'></div>
         <br />
-        <div id='damanDiv'></div>
+        <div id='ddDiv'></div>
         <br />
-        <div id='diuDiv'></div>
+        <div id='dnhDiv'></div>
         
 
     </div>
-    {# <script src="{{ url_for('static', filename='node_modules/plotly.js-dist/plotly.js') }}"></script>
-    <script src="{{ url_for('static', filename='dist/main.js') }}"></script> #}
+    <script src="{{ url_for('static', filename='node_modules/plotly.js-dist/plotly.js') }}"></script>
+    <script src="{{ url_for('static', filename='dist/mains.js') }}"></script>
     <style>
         #wrTotalDiv,
         #mahDiv, #guzDiv,#mpDiv, #chattDiv, #goaDiv, #damanDiv, #diuDiv {

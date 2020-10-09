@@ -105,17 +105,16 @@ class DemandFetchFromApi():
             entityTag (str): entityTag
         Returns:
             List[Union[dt.datetime, float]]: list of list of demand data [[timestamp, demandValue],]
-        """    
+        """
+        print(startTime, endTime)    
         demandStorageDf = pd.DataFrame(columns = [ 'timestamp','demandValue']) 
-
+        
         #creating object of ScadaApiFetcher class 
         obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret)
 
         # fetching secondwise data from api for each entity(timestamp,value) and converting to dataframe
-        resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, startTime)
-       
-        demandDf = pd.DataFrame(resData, columns =['timestamp','demandValue']) 
-
+        resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+        
          # getting time upto which data is present
         timeUptodataPresent: dt.datetime = resData[-1][0] 
         timeUptodataPresent = timeUptodataPresent.replace(second=0, microsecond=0)
@@ -124,6 +123,10 @@ class DemandFetchFromApi():
         while (endBlockTime.minute % 15) != 14:
             endBlockTime = endBlockTime - dt.timedelta(minutes=1)
 
+        demandDf = pd.DataFrame(resData, columns =['timestamp','demandValue']) 
+        # demandDf.to_excel(r'D:\wrldc_projects\demand_forecasting\filtering demo\error in resampling.xlsx')
+        #filtering demand between startTIme and endtime only
+        demandDf = demandDf[(demandDf['timestamp'] >= startTime) & (demandDf['timestamp'] <= endTime)]
         #converting to minutewise data and adding entityName column to dataframe
         demandDf = self.toMinuteWiseData(demandDf)
         
@@ -136,6 +139,7 @@ class DemandFetchFromApi():
        
         # resampling to blockwise demand
         blockwiseDf = self.toBlockwiseDemand(completeBlockDemandDf)
-        demandStorageDf = pd.concat([blockwiseDf, xtraMinDemandDf ],ignore_index=True)        
+        demandStorageDf = pd.concat([blockwiseDf, xtraMinDemandDf ],ignore_index=True)
+              
         data : List[Union[dt.datetime, float]] = self.toListOfTuple(demandStorageDf)
         return data
