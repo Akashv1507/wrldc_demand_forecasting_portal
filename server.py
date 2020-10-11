@@ -32,7 +32,7 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
     
     actualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
-
+    
     #setting end time to last minute of a day in case of forecasted demand fetch
     endDt = endDt.replace(hour=0, minute=0, second=0)
     endDt = endDt + dt.timedelta(hours= 23, minutes=59)
@@ -41,6 +41,7 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
 
     percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(actualDemandData, forecastedDemandData)
     return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData, 'percentageBiasError': percentageBiasError} )
+    # return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData} )
 
 @app.route('/')
 def home():

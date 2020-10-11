@@ -1,10 +1,11 @@
 import {PlotData, PlotTrace, setPlotTraces } from './plotUtils'
 import {getActualForecastedDemand} from './achtual&ForecastedApiUtils'
+import {convertToIst} from './timeUtils'
 
 export interface DataFromApi{
-actualDemand: [Date, number];
-forecastedDemand: [Date, number];
-percentageBiasError : [Date, number];
+actualDemand: [Date, number][];
+forecastedDemand: [Date, number][];
+percentageBiasError : [Date, number][];
 }
 
 const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR-Total Actual vs Forecasted Demand" , divName:'wrTotalDiv'};
@@ -40,15 +41,15 @@ const refreshData = async () =>{
         let fetchedData: DataFromApi = await getActualForecastedDemand(tracePnt[traceInd].tagId, startTime, endTime)
         let actualDemandTrace:PlotTrace ={
             name : "Actual Demand",
-            data : fetchedData.actualDemand
+            data : convertToIst(fetchedData.actualDemand)
         }
         let forecastedDemandTrace:PlotTrace ={
             name : "Forecasted Demand",
-            data : fetchedData.forecastedDemand
+            data : convertToIst(fetchedData.forecastedDemand)
         }
         let percentageBiasErrorTrace:PlotTrace ={
             name: "Percentage Error",
-            data : fetchedData.percentageBiasError
+            data : convertToIst(fetchedData.percentageBiasError)
         }
         plotData.traces.push(actualDemandTrace);
         plotData.traces.push(forecastedDemandTrace);

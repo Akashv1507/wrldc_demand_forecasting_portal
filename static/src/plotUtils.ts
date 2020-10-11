@@ -2,7 +2,7 @@ import Plotly from 'plotly.js-dist';
 
 export interface PlotTrace{
     name : string;
-    data : [Date, number];
+    data : [Date, number][];
     line?: { color?: string, width?: string };
 }
 
@@ -34,10 +34,13 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             showspikes: true,
             spikethickness:1,
             showline: true,
-            // tickmode: 'auto',
-            // nticks: 24
-            // dtick: 60*60*1000,
-            
+            // tickformat: '%H:%M:%S',
+            titlefont: {color: 'rgb(148, 103, 189)'},
+            tickfont: {color: 'rgb(148, 103, 189)'},
+            // showticklabels: true,
+            // type: 'category'
+            // tickmode:'linear',
+            // dtick: 1   
         },
         yaxis: {
             title: 'MW ', 
@@ -45,7 +48,12 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             zeroline: true, 
             showspikes:true,
             spikethickness:1,
-            showline: true
+            showline: true,
+            titlefont: {color: 'rgb(148, 103, 189)'},
+            tickfont: {color: 'rgb(148, 103, 189)'},
+            tickformat: "digits",
+            // hovermode: "closest",
+            
        },
         yaxis2: {
             title: 'Percentage Error',
@@ -72,7 +80,10 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
                 y: xyData.vals,
                 type: 'scatter',
                 mode: 'lines',
-                name: trace.name
+                name: trace.name,
+                // hoverinfo: 'x+y'
+                hovertemplate: '(%{x}'+', %{y:.0f}Mw)' 
+
                 
             };
             if (trace.line != null) {
@@ -88,7 +99,7 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
                 type:'bar',
                 width:0.5,
                 marker:{
-                    color: 'black'
+                    color: 'rgb(128,0,0)'
                   },
                 name: trace.name
         };

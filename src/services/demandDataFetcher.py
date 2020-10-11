@@ -93,7 +93,7 @@ class DemandFetchFromApi():
         """    
         data:List[List] = []
         for ind in df.index:
-            tempList = [str(df['timestamp'][ind]), float(df['demandValue'][ind]) ]
+            tempList = [df['timestamp'][ind], float(df['demandValue'][ind]) ]
             data.append(tempList)
         return data
 
@@ -124,6 +124,7 @@ class DemandFetchFromApi():
             endBlockTime = endBlockTime - dt.timedelta(minutes=1)
 
         demandDf = pd.DataFrame(resData, columns =['timestamp','demandValue']) 
+        
         # demandDf.to_excel(r'D:\wrldc_projects\demand_forecasting\filtering demo\error in resampling.xlsx')
         #filtering demand between startTIme and endtime only
         demandDf = demandDf[(demandDf['timestamp'] >= startTime) & (demandDf['timestamp'] <= endTime)]
@@ -142,4 +143,5 @@ class DemandFetchFromApi():
         demandStorageDf = pd.concat([blockwiseDf, xtraMinDemandDf ],ignore_index=True)
               
         data : List[Union[dt.datetime, float]] = self.toListOfTuple(demandStorageDf)
+       
         return data

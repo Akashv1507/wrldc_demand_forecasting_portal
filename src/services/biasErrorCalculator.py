@@ -4,11 +4,21 @@ def calculateBiasError(actualDemandData :List[Union[dt.datetime, float]], foreca
     
     listIndex = 0
     percentageBiasErrorList :List[Union[dt.datetime, float]] =[]
+
+     # getting time upto which data is present
+    timeUptodataPresent: dt.datetime = actualDemandData[-1][0] 
+    timeUptodataPresent = timeUptodataPresent.replace(second=0, microsecond=0)
+    endBlockTime = timeUptodataPresent
+    while (endBlockTime.minute % 15) != 14:
+        endBlockTime = endBlockTime - dt.timedelta(minutes=1)
+
+    # print(len(actualDemandData), len(forecastedDemandData))
     while(listIndex < len(actualDemandData)):
-        timestamp = actualDemandData[listIndex][0]
-        percentageBiasError = ((actualDemandData[listIndex][1]-(actualDemandData[listIndex][1]-400))/actualDemandData[listIndex][1])*100
-        tempList = [timestamp, percentageBiasError]
-        percentageBiasErrorList.append(tempList)
+        timestamp:dt.datetime = actualDemandData[listIndex][0]
+        if timestamp.minute % 15 == 0 and timestamp <= endBlockTime :
+            percentageBiasError = ((actualDemandData[listIndex][1]- forecastedDemandData[listIndex][1])/actualDemandData[listIndex][1])*100
+            tempList = [timestamp, percentageBiasError]
+            percentageBiasErrorList.append(tempList)
         listIndex = listIndex +1
     return percentageBiasErrorList
 

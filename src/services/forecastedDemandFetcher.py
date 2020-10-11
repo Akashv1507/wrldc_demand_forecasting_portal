@@ -25,7 +25,7 @@ class ForecastedDemandFetchRepo():
         
         data:List[List] = []
         for ind in df.index:
-            tempList = [str(df['TIME_STAMP'][ind]), float(df['FORECASTED_DEMAND_VALUE'][ind]) ]
+            tempList = [df['TIME_STAMP'][ind], float(df['FORECASTED_DEMAND_VALUE'][ind]) ]
             data.append(tempList)
         return data
 
