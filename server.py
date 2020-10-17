@@ -5,8 +5,10 @@ from src.config.appConfig import getConfig
 from flask import Flask, request, jsonify, render_template
 import datetime as dt
 from typing import List, Tuple, TypedDict, Union
-from src.services.demandDataFetcher import DemandFetchFromApi
-from src.services.forecastedDemandFetcher import ForecastedDemandFetchRepo
+from src.services.todayActualDemandFetcher import DemandFetchFromApi
+from src.services.intradayForecastedDemandFetcher import IntradayForecastedDemandFetchRepo
+from src.services.dayaheadForecastFetcher import DayaheadForecastedDemandFetchRepo
+from src.services.prevActualDemandFetcher import PreviousDayDemandFetchRepo
 from src.services.biasErrorCalculator import calculateBiasError
 
 app = Flask(__name__)
@@ -23,25 +25,46 @@ clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
 
 obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
-obj_forecastedDemandFetchRepo = ForecastedDemandFetchRepo(conString)
+obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(conString)
+obj_dayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(conString)
+obj_previousDayDemandFetchRepo = PreviousDayDemandFetchRepo(conString)
+
 
 @app.route('/api/<entityTag>/<startTime>/<endTime>')
 def deviceDataApi(entityTag: str, startTime: str, endTime: str):
-   
+    
     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
     
-    actualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
-    
-    #setting end time to last minute of a day in case of forecasted demand fetch
-    endDt = endDt.replace(hour=0, minute=0, second=0)
-    endDt = endDt + dt.timedelta(hours= 23, minutes=59)
-    
-    forecastedDemandData:  List[Union[dt.datetime, float]] = obj_forecastedDemandFetchRepo.fetchForecastedDemand(startDt, endDt, entityTag)
+    todayActualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
 
-    percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(actualDemandData, forecastedDemandData)
-    return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData, 'percentageBiasError': percentageBiasError} )
-    # return jsonify({'actualDemand': actualDemandData, 'forecastedDemand': forecastedDemandData} )
+
+    # setting end time to last minute of a day in case of forecasted demand fetch
+    startTime = startDt
+    endTime = endDt.replace(hour=0, minute=0, second=0)
+    endTime = endTime + dt.timedelta(hours= 23, minutes=59)
+    
+    # today intraday forecast fetch
+    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_intradayForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+   
+    #today dayahead forecast fetch
+    todayDaForecast :List[Union[dt.datetime, float]] = obj_dayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    
+    #setting startTime and endTime for tomorrow day ahead forecast fetch.
+    startTime = startDt + dt.timedelta(days=1)
+    endTime = startTime + dt.timedelta(hours=23, minutes=59)
+    tommDaForecast : List[Union[dt.datetime, float]] = obj_dayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    # print(tommDaForecast[0][0], tommDaForecast[-1][0])
+
+    # setting startTime and endTime for prev day actual demand fetch.
+    startTime = startDt-dt.timedelta(days=1)
+    endTime = startTime + dt.timedelta(hours=23, minutes=59)
+    prevDayActualDemand : List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(startTime, endTime, entityTag)
+    
+    #calculating percentage bias error
+    percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(todayActualDemandData, intradayforecastedDemand)
+    
+    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast, 'percentageBiasError': percentageBiasError} )
 
 @app.route('/')
 def home():

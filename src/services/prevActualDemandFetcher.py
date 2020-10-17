@@ -4,8 +4,8 @@ import datetime as dt
 from typing import List, Tuple, Union
 
 
-class ForecastedDemandFetchRepo():
-    """block wise forecasted demand fetch repository
+class PreviousDayDemandFetchRepo():
+    """block wise yesterday demand fetch repository
     """
 
     def __init__(self, con_string):
@@ -25,18 +25,18 @@ class ForecastedDemandFetchRepo():
         
         data:List[List] = []
         for ind in df.index:
-            tempList = [df['TIME_STAMP'][ind], float(df['FORECASTED_DEMAND_VALUE'][ind]) ]
+            tempList = [df['TIME_STAMP'][ind], float(df['DEMAND_VALUE'][ind]) ]
             data.append(tempList)
         return data
 
-    def fetchForecastedDemand(self, startTime: dt.datetime, endTime: dt.datetime, entityTag:str) -> List[Union[dt.datetime, float]]:
-        """fetch forecasted demand and return [[timestamp, forecastedDemandValue],]
+    def fetchPrevDemand(self, startTime: dt.datetime, endTime: dt.datetime, entityTag:str) -> List[Union[dt.datetime, float]]:
+        """fetch previous day actual demand and return [[timestamp, DemandValue],]
         Args:
             startTime (dt.datetime): start time
             endTime (dt.datetime): end time
             entityTag (str): entity tag
         Returns:
-            List[Union[dt.datetime, float]]: list of list of demand data [[timestamp, forecastedDemandValue],]
+            List[Union[dt.datetime, float]]: list of list of demand data [[timestamp, DemandValue],]
         """        
 
         try:
@@ -48,7 +48,7 @@ class ForecastedDemandFetchRepo():
         else:
             try:
                 cur = connection.cursor()
-                fetch_sql = "SELECT time_stamp, forecasted_demand_value FROM dayahead_demand_forecast WHERE time_stamp BETWEEN TO_DATE(:start_time,'YYYY-MM-DD HH24:MI:SS') and TO_DATE(:end_time,'YYYY-MM-DD HH24:MI:SS') and entity_tag =:entity ORDER BY time_stamp"
+                fetch_sql = "SELECT time_stamp, demand_value FROM derived_blockwise_demand WHERE time_stamp BETWEEN TO_DATE(:start_time,'YYYY-MM-DD HH24:MI:SS') and TO_DATE(:end_time,'YYYY-MM-DD HH24:MI:SS') and entity_tag =:entity ORDER BY time_stamp"
                 cur.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS' ")
                 forecastedDemandDf = pd.read_sql(fetch_sql, params={
                                  'start_time': startTime, 'end_time': endTime, 'entity':entityTag}, con=connection)

@@ -106,7 +106,7 @@ class DemandFetchFromApi():
         Returns:
             List[Union[dt.datetime, float]]: list of list of demand data [[timestamp, demandValue],]
         """
-        print(startTime, endTime)    
+        # print(startTime, endTime)    
         demandStorageDf = pd.DataFrame(columns = [ 'timestamp','demandValue']) 
         
         #creating object of ScadaApiFetcher class 
@@ -124,8 +124,7 @@ class DemandFetchFromApi():
             endBlockTime = endBlockTime - dt.timedelta(minutes=1)
 
         demandDf = pd.DataFrame(resData, columns =['timestamp','demandValue']) 
-        
-        # demandDf.to_excel(r'D:\wrldc_projects\demand_forecasting\filtering demo\error in resampling.xlsx')
+
         #filtering demand between startTIme and endtime only
         demandDf = demandDf[(demandDf['timestamp'] >= startTime) & (demandDf['timestamp'] <= endTime)]
         #converting to minutewise data and adding entityName column to dataframe
@@ -135,12 +134,16 @@ class DemandFetchFromApi():
         filteredDemandDf = self.applyFilteringToDf(demandDf,entityTag)
      
         # extra minutes from a complete block will remain as minutes else all converted to blockwise demand
-        completeBlockDemandDf = filteredDemandDf[(filteredDemandDf['timestamp'] >= startTime) & (filteredDemandDf['timestamp'] <= endBlockTime)]
-        xtraMinDemandDf = filteredDemandDf[(filteredDemandDf['timestamp'] > endBlockTime) & (filteredDemandDf['timestamp'] <= endTime)]
-       
-        # resampling to blockwise demand
-        blockwiseDf = self.toBlockwiseDemand(completeBlockDemandDf)
-        demandStorageDf = pd.concat([blockwiseDf, xtraMinDemandDf ],ignore_index=True)
+        if startTime<endBlockTime:
+            completeBlockDemandDf = filteredDemandDf[(filteredDemandDf['timestamp'] >= startTime) & (filteredDemandDf['timestamp'] <= endBlockTime)]
+            xtraMinDemandDf = filteredDemandDf[(filteredDemandDf['timestamp'] > endBlockTime) & (filteredDemandDf['timestamp'] <= endTime)] 
+            
+            # resampling to blockwise demand
+            blockwiseDf = self.toBlockwiseDemand(completeBlockDemandDf)
+            demandStorageDf = pd.concat([blockwiseDf, xtraMinDemandDf ],ignore_index=True)
+        else:
+            #only valid in first block
+            demandStorageDf = demandDf
               
         data : List[Union[dt.datetime, float]] = self.toListOfTuple(demandStorageDf)
        

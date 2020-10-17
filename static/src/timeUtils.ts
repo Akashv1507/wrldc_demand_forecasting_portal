@@ -20,3 +20,21 @@ export const convertToIst = (data:[Date, number][])=>{
     
     return data;
 }
+export const addOneDayTime = (data:[Date, number][])=>{
+    let ind =0;
+    for(ind; ind< data.length; ind++ ){
+        data[ind][0] = new Date(data[ind][0]);
+        data[ind][0] = new Date(data[ind][0].getTime() + 24*60*60*1000);
+    }
+    
+    return data;
+}
+export const subtractOneDayTime = (data:[Date, number][])=>{
+    let ind =0;
+    for(ind; ind< data.length; ind++ ){
+        data[ind][0] = new Date(data[ind][0]);
+        data[ind][0] = new Date(data[ind][0].getTime() - 24*60*60*1000);
+    }
+    
+    return data;
+}

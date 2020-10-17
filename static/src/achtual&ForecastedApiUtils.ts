@@ -1,7 +1,7 @@
 import { convertDateTimeToUrlStr } from "./timeUtils";
 import {DataFromApi} from "./index"
 
-export const getActualForecastedDemand = async (entityTag: string, startDate: Date, endDate: Date): Promise<DataFromApi | []> => {
+export const getActualForecastedDemand = async (entityTag: string, startDate: Date, endDate: Date) => {
     try {
         const startDateStr = convertDateTimeToUrlStr(startDate);
         const endDateStr = convertDateTimeToUrlStr(endDate);

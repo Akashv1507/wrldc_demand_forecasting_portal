@@ -3,7 +3,8 @@ import Plotly from 'plotly.js-dist';
 export interface PlotTrace{
     name : string;
     data : [Date, number][];
-    line?: { color?: string, width?: string };
+    line?: { color?: string, width?: number };
+    visible?:string|boolean;
 }
 
 export interface PlotData{
@@ -24,36 +25,39 @@ export const getPlotXYArrays = (measData: PlotTrace["data"]): { timestamps: Date
 export const setPlotTraces = (divId: string, plotData: PlotData) => {
     let traceData = [];
     const layout = {
-        title: plotData.title,
+        title:{
+            text:plotData.title,
+            font: {
+              size: 24
+            }
+          }, 
+        // plot_bgcolor:"black",
+        // paper_bgcolor:"#FFF3",
         showlegend: true,
         legend: { "orientation": "h" },
-        autosize: true,
+        autosize: false,
+        height: 600,
+        width: 1500,
         xaxix:{
-            showgrid: false,
+            showgrid: true,
             zeroline: true,
             showspikes: true,
             spikethickness:1,
             showline: true,
-            // tickformat: '%H:%M:%S',
             titlefont: {color: 'rgb(148, 103, 189)'},
             tickfont: {color: 'rgb(148, 103, 189)'},
-            // showticklabels: true,
-            // type: 'category'
-            // tickmode:'linear',
-            // dtick: 1   
+              
         },
         yaxis: {
             title: 'MW ', 
-            showgrid: false, 
+            showgrid: true, 
             zeroline: true, 
             showspikes:true,
             spikethickness:1,
             showline: true,
             titlefont: {color: 'rgb(148, 103, 189)'},
             tickfont: {color: 'rgb(148, 103, 189)'},
-            tickformat: "digits",
-            // hovermode: "closest",
-            
+            tickformat: "digits",       
        },
         yaxis2: {
             title: 'Percentage Error',
@@ -74,21 +78,23 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
         const trace = plotData.traces[traceIter];
         const xyData = getPlotXYArrays(trace.data)
         // creating different graph for bias error  , which is 2nd index of plotdata.traces
-        if(traceIter != 2){
+        if(traceIter != 5){
             let traceObj = {
                 x: xyData.timestamps,
                 y: xyData.vals,
                 type: 'scatter',
                 mode: 'lines',
                 name: trace.name,
-                // hoverinfo: 'x+y'
+                width:10,
                 hovertemplate: '(%{x}'+', %{y:.0f}Mw)' 
-
                 
             };
             if (trace.line != null) {
                 traceObj['line'] = trace.line
-            }   
+            } 
+            if(trace.visible!= null){
+                traceObj['visible']= trace.visible
+            } 
             traceData.push(traceObj); 
         }
         else{
@@ -97,9 +103,9 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
                 y: xyData.vals,
                 yaxis: 'y2',
                 type:'bar',
-                width:0.5,
-                marker:{
-                    color: 'rgb(128,0,0)'
+                width:1,
+                marker:{ 
+                    color: 'rgb(178,34,34)'
                   },
                 name: trace.name
         };
