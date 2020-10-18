@@ -25,7 +25,7 @@ let intervalID = null
 window.onload = async () => {
     intervalID = setInterval(refreshData , 1000*60*6);
     (document.getElementById('refreshBtn') as HTMLButtonElement ).onclick = refreshData;
-    // refreshData()
+    refreshData()
 }
 
 const refreshData = async () =>{
