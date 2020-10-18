@@ -1,6 +1,6 @@
 import {PlotData, PlotTrace, setPlotTraces } from './plotUtils'
 import {getActualForecastedDemand} from './achtual&ForecastedApiUtils'
-import {addOneDayTime, convertToIst, subtractOneDayTime} from './timeUtils'
+import {addOneDayTime, convertToIst, getBlockNo, subtractOneDayTime} from './timeUtils'
 
 export interface DataFromApi{
 todayActualDemand: [Date, number][];
@@ -11,14 +11,14 @@ tommDaForecast:[Date, number][];
 percentageBiasError : [Date, number][];
 }
 
-const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR-Total Actual vs Forecasted Demand" , divName:'wrTotalDiv', spanName:'wrTotalSpan'};
-const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand" , divName:'mahDiv' , spanName:'mahSpan'};
-const gujrat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand" , divName:'guzDiv', spanName:'guzSpan'};
-const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand" , divName:'mpDiv', spanName:'mpSpan'};
-const chattisgarh = { tagId: "WRLDCMP.SCADA1.A0046945" , tagName: "Chattisgarh Actual vs Forecasted Demand" , divName:'chattDiv' , spanName:'chattSpan'};
-const goa = { tagId: "WRLDCMP.SCADA1.A0046962" , tagName: "Goa Actual vs Forecasted Demand" , divName:'goaDiv', spanName:'goaSpan'};
-const dd = { tagId: "WRLDCMP.SCADA1.A0046948" , tagName: "Daman & Diu Actual vs Forecasted Demand" , divName:'ddDiv', spanName:'ddSpan'};
-const dnh  = { tagId: "WRLDCMP.SCADA1.A0046953" , tagName: "Dadar Nagar Haweli Actual vs Forecasted Demand" , divName:'dnhDiv', spanName:'dnhSpan'};
+const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR-Total Actual vs Forecasted Demand" , divName:'wrTotalDiv', spanName:'wrTotalSpan',infoName : 'WR'};
+const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand" , divName:'mahDiv' , spanName:'mahSpan',infoName : 'Mah'};
+const gujrat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand" , divName:'guzDiv', spanName:'guzSpan',infoName : 'Guz'};
+const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand" , divName:'mpDiv', spanName:'mpSpan',infoName : 'MP'};
+const chattisgarh = { tagId: "WRLDCMP.SCADA1.A0046945" , tagName: "Chattisgarh Actual vs Forecasted Demand" , divName:'chattDiv' , spanName:'chattSpan',infoName : 'Chatt'};
+const goa = { tagId: "WRLDCMP.SCADA1.A0046962" , tagName: "Goa Actual vs Forecasted Demand" , divName:'goaDiv', spanName:'goaSpan',infoName : 'Goa'};
+const dd = { tagId: "WRLDCMP.SCADA1.A0046948" , tagName: "Daman & Diu Actual vs Forecasted Demand" , divName:'ddDiv', spanName:'ddSpan',infoName : 'DD'};
+const dnh  = { tagId: "WRLDCMP.SCADA1.A0046953" , tagName: "Dadar Nagar Haweli Actual vs Forecasted Demand" , divName:'dnhDiv', spanName:'dnhSpan',infoName : 'DNH'};
 
 let intervalID = null
 
@@ -99,9 +99,18 @@ const refreshData = async () =>{
         plotData.traces.push(percentageBiasErrorTrace)
         setPlotTraces(tracePnt[traceInd].divName, plotData);
 
-        const currDemand=fetchedData.todayActualDemand[fetchedData.todayActualDemand.length-1]
+        //creating meta information of current demand and forecast
         const spanId = document.getElementById(tracePnt[traceInd].spanName)
-        spanId.innerHTML = `At ${currDemand[0].getHours()}:${currDemand[0].getMinutes()} Demand = ${currDemand[1]}`
+        const blockNo = getBlockNo()
+
+        const currDemand=fetchedData.todayActualDemand[fetchedData.todayActualDemand.length-1]
+        const demand= Math.round(currDemand[1])
+
+        const currForecastedDemand = fetchedData.intradayForecastedDemand[blockNo]
+        const forecast = Math.round(currForecastedDemand[1])
+
+        const infoName =tracePnt[traceInd].infoName
+        spanId.innerHTML = `<b>At ${currDemand[0].getHours()}:${currDemand[0].getMinutes()} ${infoName} Demand = ${demand} Mw,  <br> At ${currForecastedDemand[0].getHours()}:${currForecastedDemand[0].getMinutes()} ${infoName} Forecast =${forecast} Mw.</b>`
     }
     
 

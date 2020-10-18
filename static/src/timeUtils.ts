@@ -38,3 +38,21 @@ export const subtractOneDayTime = (data:[Date, number][])=>{
     
     return data;
 }
+
+export const getBlockNo = ():number=>{
+    let currTime = new Date();
+    let startTime = new Date(currTime.getFullYear(), currTime.getMonth(), currTime.getDate(), 0, 0, 0)
+    let endTime = new Date(startTime.getTime() + 15*60*1000)
+    let blockNo = 0;
+    for(var i =1; i<96 ; i++){
+        if (startTime<=currTime && currTime<endTime){
+            blockNo = i;
+            break;
+        }
+        else{
+            startTime = new Date(startTime.getTime()+ 15*60*1000)
+            endTime = new Date(endTime.getTime()+ 15*60*1000)
+        }
+    }
+    return blockNo;
+}
