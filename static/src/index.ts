@@ -103,10 +103,10 @@ const refreshData = async () =>{
         const spanId = document.getElementById(tracePnt[traceInd].spanName)
         const blockNo = getBlockNo()
 
-        const currDemand=fetchedData.todayActualDemand[fetchedData.todayActualDemand.length-1]
+        const currDemand:[Date, number] =fetchedData.todayActualDemand[fetchedData.todayActualDemand.length-1]
         const demand= Math.round(currDemand[1])
 
-        const currForecastedDemand = fetchedData.intradayForecastedDemand[blockNo]
+        const currForecastedDemand:[Date, number] = fetchedData.intradayForecastedDemand[blockNo]
         const forecast = Math.round(currForecastedDemand[1])
 
         const infoName =tracePnt[traceInd].infoName
