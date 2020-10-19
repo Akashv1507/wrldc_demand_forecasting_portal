@@ -1,6 +1,15 @@
 from typing import List, Union
 import datetime as dt
 def calculateBiasError(actualDemandData :List[Union[dt.datetime, float]], forecastedDemandData:List[Union[dt.datetime, float]])-> List[Union[dt.datetime, float]]:
+    """calculate blockwise bias error
+
+    Args:
+        actualDemandData (List[Union[dt.datetime, float]]): actual demand data
+        forecastedDemandData (List[Union[dt.datetime, float]]): forecasted demand data
+
+    Returns:
+        List[Union[dt.datetime, float]]: list of [[timestamp, bias error]]
+    """    
     
     listIndex = 0
     percentageBiasErrorList :List[Union[dt.datetime, float]] =[]
