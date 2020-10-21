@@ -9,7 +9,7 @@ from src.services.todayActualDemandFetcher import DemandFetchFromApi
 from src.services.intradayForecastedDemandFetcher import IntradayForecastedDemandFetchRepo
 from src.services.dayaheadForecastFetcher import DayaheadForecastedDemandFetchRepo
 from src.services.prevActualDemandFetcher import PreviousDayDemandFetchRepo
-from src.services.biasErrorCalculator import calculateBiasError
+# from src.services.biasErrorCalculator import calculateBiasError
 
 app = Flask(__name__)
 
@@ -62,9 +62,9 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
     prevDayActualDemand : List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(startTime, endTime, entityTag)
     
     #calculating percentage bias error
-    percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(todayActualDemandData, intradayforecastedDemand)
+    # percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(todayActualDemandData, intradayforecastedDemand)
     
-    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast, 'percentageBiasError': percentageBiasError} )
+    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast} )
 
 @app.route('/')
 def home():
@@ -73,6 +73,6 @@ def home():
 if __name__ == '__main__':
     serverMode: str = appConfig['mode']
     if serverMode.lower() == 'd':
-        app.run(host="0.0.0.0", port=int(appConfig['flaskPort']), debug=True)
+        app.run(host="localhost", port=int(appConfig['flaskPort']), debug=True)
     else:
         serve(app, host='0.0.0.0', port=int(appConfig['flaskPort']), threads=1)
