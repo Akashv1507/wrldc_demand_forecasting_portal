@@ -1,6 +1,6 @@
 import {PlotData, PlotTrace, setPlotTraces } from './plotUtils'
 import {getActualForecastedDemand} from './achtual&ForecastedApiUtils'
-import {addOneDayTime, convertToIst, getBlockNo, subtractOneDayTime} from './timeUtils'
+import {addOneDayTime, convertToIst, getBlockNo, subtractOneDayTime, ensureTwoDigits} from './timeUtils'
 
 export interface DataFromApi{
 todayActualDemand: [Date, number][];
@@ -11,19 +11,19 @@ tommDaForecast:[Date, number][];
 // percentageBiasError : [Date, number][];
 }
 
-const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR-Total Actual vs Forecasted Demand" , divName:'wrTotalDiv',divNameActDem:'wrTotalActualDiv', spanName:'wrTotalSpan',infoName : 'WR'};
-const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand" , divName:'mahDiv' ,divNameActDem:'mahActualhDiv', spanName:'mahSpan',infoName : 'Mah'};
-const gujrat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand" , divName:'gujDiv', divNameActDem:'gujActualDiv', spanName:'gujSpan',infoName : 'Guj'};
-const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand" , divName:'mpDiv', divNameActDem:'mpActualDiv',  spanName:'mpSpan',infoName : 'MP'};
-const chattisgarh = { tagId: "WRLDCMP.SCADA1.A0046945" , tagName: "Chattisgarh Actual vs Forecasted Demand" , divName:'chattDiv' , divNameActDem:'chattActualDiv',  spanName:'chattSpan',infoName : 'Chatt'};
-const goa = { tagId: "WRLDCMP.SCADA1.A0046962" , tagName: "Goa Actual vs Forecasted Demand" , divName:'goaDiv', divNameActDem:'goaActualDiv',  spanName:'goaSpan',infoName : 'Goa'};
-const dd = { tagId: "WRLDCMP.SCADA1.A0046948" , tagName: "Daman & Diu Actual vs Forecasted Demand" , divName:'ddDiv', divNameActDem:'ddActualDiv',  spanName:'ddSpan',infoName : 'DD'};
-const dnh  = { tagId: "WRLDCMP.SCADA1.A0046953" , tagName: "Dadar Nagar Haweli Actual vs Forecasted Demand" , divName:'dnhDiv', divNameActDem:'dnhActualDiv',  spanName:'dnhSpan',infoName : 'DNH'};
+const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR Actual vs Forecasted Demand" , divName:'wrTotalDiv',divNameActDem:'wrTotalActualDiv', spanName:'wrTotalSpan', blockNoSpan : 'wrBlockNoSpan', infoName : 'WR'};
+const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand" , divName:'mahDiv' ,divNameActDem:'mahActualhDiv', spanName:'mahSpan', blockNoSpan : 'mahBlockNoSpan', infoName : 'Mah'};
+const gujrat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand" , divName:'gujDiv', divNameActDem:'gujActualDiv', spanName:'gujSpan', blockNoSpan : 'gujBlockNoSpan', infoName : 'Guj'};
+const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand" , divName:'mpDiv', divNameActDem:'mpActualDiv',  spanName:'mpSpan', blockNoSpan : 'mpBlockNoSpan', infoName : 'MP'};
+const chattisgarh = { tagId: "WRLDCMP.SCADA1.A0046945" , tagName: "Chattisgarh Actual vs Forecasted Demand" , divName:'chattDiv' , divNameActDem:'chattActualDiv',  spanName:'chattSpan', blockNoSpan : 'chattBlockNoSpan', infoName : 'Chatt'};
+const goa = { tagId: "WRLDCMP.SCADA1.A0046962" , tagName: "Goa Actual vs Forecasted Demand" , divName:'goaDiv', divNameActDem:'goaActualDiv',  spanName:'goaSpan', blockNoSpan : 'goaBlockNoSpan', infoName : 'Goa'};
+const dd = { tagId: "WRLDCMP.SCADA1.A0046948" , tagName: "Daman & Diu Actual vs Forecasted Demand" , divName:'ddDiv', divNameActDem:'ddActualDiv',  spanName:'ddSpan', blockNoSpan : 'ddBlockNoSpan', infoName : 'DD'};
+const dnh  = { tagId: "WRLDCMP.SCADA1.A0046953" , tagName: "Dadar Nagar Haweli Actual vs Forecasted Demand" , divName:'dnhDiv', divNameActDem:'dnhActualDiv',  spanName:'dnhSpan', blockNoSpan : 'dnhBlockNoSpan', infoName : 'DNH'};
 
 let intervalID = null
 
 window.onload = async () => {
-    intervalID = setInterval(refreshData , 1000*60*6);
+    intervalID = setInterval(refreshData , 1000*60*4);
     (document.getElementById('refreshBtn') as HTMLButtonElement ).onclick = refreshData;
     refreshData()
 }
@@ -52,6 +52,7 @@ const refreshData = async () =>{
                 width: 3
               }  
         }
+        
         let yestActualDemandTrace:PlotTrace ={
             name : "Yesterday Actual Demand",
             data : addOneDayTime(convertToIst(fetchedData.prevDayActualDemand)),
@@ -103,20 +104,26 @@ const refreshData = async () =>{
 
         //creating meta information of current demand and forecast
         const spanId = document.getElementById(tracePnt[traceInd].spanName)
+        const blockNoSpanId = document.getElementById(tracePnt[traceInd].blockNoSpan)
         const blockNo = getBlockNo()
-        const currDate = startTime.getDate()
-        const currMonth = startTime.getMonth()+1
-        const currYear = startTime.getFullYear()
+        const currDate = ensureTwoDigits(startTime.getDate())
+        const currMonth = ensureTwoDigits(startTime.getMonth()+1)
+        const currYear = ensureTwoDigits(startTime.getFullYear())
 
         const currDemand:[Date, number] =fetchedData.todayActualDemand[fetchedData.todayActualDemand.length-1]
+        const currHrs = ensureTwoDigits(currDemand[0].getHours())
+        const currMin = ensureTwoDigits(currDemand[0].getMinutes())
         const demand= Math.round(currDemand[1])
+        
 
         const currForecastedDemand:[Date, number] = fetchedData.intradayForecastedDemand[blockNo-1]
         const forecast = Math.round(currForecastedDemand[1])
 
         const percentageError = (((demand-forecast)/demand)*100).toFixed(2)
         const infoName =tracePnt[traceInd].infoName
-        spanId.innerHTML = `<b>Date- ${currDate}-${currMonth}-${currYear}, Block No. - ${blockNo}, <br> At ${currDemand[0].getHours()}:${currDemand[0].getMinutes()} ${infoName} Demand = ${demand} MW,  <br> At ${currForecastedDemand[0].getHours()}:${currForecastedDemand[0].getMinutes()} ${infoName} Forecast =${forecast} MW,<br> Percentage Error =${percentageError}%</b>`
+
+        blockNoSpanId.innerHTML = `<b>Date- ${currDate}-${currMonth}-${currYear} <br> Block No. - ${blockNo}<b>`
+        spanId.innerHTML = `<b>At ${currHrs}:${currMin} ${infoName} Demand = ${demand} MW  <br> At ${currHrs}:${currMin} ${infoName} Forecast = ${forecast} MW <br> Percentage Error = ${percentageError}%</b>`
 
         //previous day actual demand on another graph
         let actualPlotData : PlotData = {
