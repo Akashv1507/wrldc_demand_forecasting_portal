@@ -1,4 +1,5 @@
 import Plotly from 'plotly.js-dist';
+import {startTime} from './timeUtils'
 
 
 
@@ -55,9 +56,10 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             titlefont: {color: '#000', size: 22},
             tickfont: {color: '#000'},
             tickmode: "linear",
-            // tick0: today,
+            tick0: startTime,
            dtick: 15 * 60 * 1000 ,
-           automargin: true
+           automargin: true,
+           tickangle:270
               
         },
         yaxis: {

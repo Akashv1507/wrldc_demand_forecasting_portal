@@ -10,6 +10,9 @@ export const ensureTwoDigits = (num: number): string => {
     return "" + num;
 }
 
+export let startTime = new Date()
+startTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), 0, 0, 0);
+startTime = new Date(startTime.getTime()+ 15*60*1000)
 
 //subtracting 5 hrs and 30 min and converting to indian standard time.
 export const convertToIst = (data:[Date, number][])=>{
