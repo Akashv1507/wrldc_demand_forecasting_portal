@@ -56,10 +56,10 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             titlefont: {color: '#000', size: 22},
             tickfont: {color: '#000'},
             tickmode: "linear",
-            tick0: startTime,
+            // tick0: startTime,
            dtick: 15 * 60 * 1000 ,
            automargin: true,
-           tickangle:270
+           tickangle:283
               
         },
         yaxis: {
