@@ -49,7 +49,7 @@ export const getBlockNo = ():number=>{
     let startTime = new Date(currTime.getFullYear(), currTime.getMonth(), currTime.getDate(), 0, 0, 0)
     let endTime = new Date(startTime.getTime() + 15*60*1000)
     let blockNo = 0;
-    for(var i =1; i<96 ; i++){
+    for(var i =1; i<=96 ; i++){
         if (startTime<=currTime && currTime<endTime){
             blockNo = i;
             break;

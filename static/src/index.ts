@@ -115,7 +115,6 @@ const refreshData = async () =>{
         const currMin = ensureTwoDigits(currDemand[0].getMinutes())
         const demand= Math.round(currDemand[1])
         
-
         const currForecastedDemand:[Date, number] = fetchedData.intradayForecastedDemand[blockNo-1]
         const forecast = Math.round(currForecastedDemand[1])
 
