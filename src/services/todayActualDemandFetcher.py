@@ -130,6 +130,10 @@ class DemandFetchFromApi():
         #converting to minutewise data and adding entityName column to dataframe
         demandDf = self.toMinuteWiseData(demandDf)
        
+       # handling missing values NANs
+        demandDf['demandValue'].fillna(method='ffill', inplace= True)
+        demandDf['demandValue'].fillna(method='bfill', inplace= True)
+
         #applying filtering logic, removed by mgmt
         # filteredDemandDf = self.applyFilteringToDf(demandDf,entityTag)
         
@@ -146,7 +150,9 @@ class DemandFetchFromApi():
             #only valid in first block
             demandStorageDf = demandDf
         
-      
+        
+        # demandDf.to_excel(r'D:\wrldc_projects\demand_forecasting\filtering demo\28-oct-after-Na.xlsx')
+
         data : List[Union[dt.datetime, float]] = self.toListOfTuple(demandStorageDf)
        
         return data
