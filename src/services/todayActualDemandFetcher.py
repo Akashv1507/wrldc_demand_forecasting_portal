@@ -129,14 +129,15 @@ class DemandFetchFromApi():
         demandDf = demandDf[(demandDf['timestamp'] >= startTime) & (demandDf['timestamp'] <= endTime)]
         #converting to minutewise data and adding entityName column to dataframe
         demandDf = self.toMinuteWiseData(demandDf)
+       
+        #applying filtering logic, removed by mgmt
+        # filteredDemandDf = self.applyFilteringToDf(demandDf,entityTag)
         
-        #applying filtering logic
-        filteredDemandDf = self.applyFilteringToDf(demandDf,entityTag)
-     
+
         # extra minutes from a complete block will remain as minutes else all converted to blockwise demand
         if startTime<endBlockTime:
-            completeBlockDemandDf = filteredDemandDf[(filteredDemandDf['timestamp'] >= startTime) & (filteredDemandDf['timestamp'] <= endBlockTime)]
-            xtraMinDemandDf = filteredDemandDf[(filteredDemandDf['timestamp'] > endBlockTime) & (filteredDemandDf['timestamp'] <= endTime)] 
+            completeBlockDemandDf = demandDf[(demandDf['timestamp'] >= startTime) & (demandDf['timestamp'] <= endBlockTime)]
+            xtraMinDemandDf = demandDf[(demandDf['timestamp'] > endBlockTime) & (demandDf['timestamp'] <= endTime)] 
             
             # resampling to blockwise demand
             blockwiseDf = self.toBlockwiseDemand(completeBlockDemandDf)
@@ -144,7 +145,8 @@ class DemandFetchFromApi():
         else:
             #only valid in first block
             demandStorageDf = demandDf
-              
+        
+      
         data : List[Union[dt.datetime, float]] = self.toListOfTuple(demandStorageDf)
        
         return data
