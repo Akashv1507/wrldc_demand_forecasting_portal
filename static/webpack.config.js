@@ -3,11 +3,13 @@ const path = require('path');
 module.exports = {
     // multiple entry points - https://github.com/webpack/docs/wiki/multiple-entry-points
     entry: {
-        main: ['babel-polyfill', path.resolve(__dirname, 'src/index.ts')]
+        main: ['babel-polyfill', path.resolve(__dirname, 'src/index.ts')],
+        dfm2Main: ['babel-polyfill', path.resolve(__dirname, 'src/dfm2Index.ts')],
     },
 
     output: {
-        filename: "[name].js"
+        filename: "[name].js",
+        filename:"[name].js"
     },
 
     // https://webpack.js.org/configuration/externals/

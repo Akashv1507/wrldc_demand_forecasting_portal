@@ -39,7 +39,7 @@ class DayaheadForecastedDemandFetchRepo():
         Returns:
             List[Union[dt.datetime, float]]: list of list [[timestamp, forecastedDemandValue],]
         """        
-
+        
         try:
             connection = cx_Oracle.connect(self.connString)
 
@@ -52,7 +52,7 @@ class DayaheadForecastedDemandFetchRepo():
                 cur.execute("ALTER SESSION SET NLS_DATE_FORMAT = 'YYYY-MM-DD HH24:MI:SS' ")
                 forecastedDemandDf = pd.read_sql(fetch_sql, params={
                                  'start_time': startTime, 'end_time': endTime, 'entity':entityTag}, con=connection)
-
+                
             except Exception as err:
                 print('error while creating a cursor', err)
             else:
