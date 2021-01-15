@@ -11,7 +11,7 @@ tommDaForecast:[Date, number][];
 // percentageBiasError : [Date, number][];
 }
 
-const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR Actual vs Forecasted Demand" , divName:'wrTotalDiv',divNameActDem:'wrTotalActualDiv', spanName:'wrTotalSpan', blockNoSpan : 'wrBlockNoSpan', infoName : 'WR'};
+const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR Actual vs Forecasted Demand (MLR)" , divName:'wrTotalDiv',divNameActDem:'wrTotalActualDiv', spanName:'wrTotalSpan', blockNoSpan : 'wrBlockNoSpan', infoName : 'WR'};
 const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand" , divName:'mahDiv' ,divNameActDem:'mahActualhDiv', spanName:'mahSpan', blockNoSpan : 'mahBlockNoSpan', infoName : 'Mah'};
 const gujrat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand" , divName:'gujDiv', divNameActDem:'gujActualDiv', spanName:'gujSpan', blockNoSpan : 'gujBlockNoSpan', infoName : 'Guj'};
 const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand" , divName:'mpDiv', divNameActDem:'mpActualDiv',  spanName:'mpSpan', blockNoSpan : 'mpBlockNoSpan', infoName : 'MP'};

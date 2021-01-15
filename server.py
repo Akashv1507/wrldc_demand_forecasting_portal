@@ -9,7 +9,7 @@ from src.services.todayActualDemandFetcher import DemandFetchFromApi
 from src.services.intradayForecastedDemandFetcher import IntradayForecastedDemandFetchRepo
 from src.services.dayaheadForecastFetcher import DayaheadForecastedDemandFetchRepo
 from src.services.prevActualDemandFetcher import PreviousDayDemandFetchRepo
-from src.services.dmf2DAForecastFetcher import DayaheadForecastedDemandFetchRepo
+from src.services.dmf2DAForecastFetcher import Dfm2DayaheadForecastedDemandFetchRepo
 # from src.services.biasErrorCalculator import calculateBiasError
 
 app = Flask(__name__)
@@ -24,6 +24,7 @@ apiBaseUrl: str = appConfig['apiBaseUrl']
 clientId: str = appConfig['clientId']
 clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
+errorPortalUrl :str = appConfig['errorPortalUrl']
 
 #dmf1 objects of fetchers
 obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
@@ -32,7 +33,7 @@ obj_dayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(conStr
 obj_previousDayDemandFetchRepo = PreviousDayDemandFetchRepo(conString)
 
 #dmf2 objects of fetchers
-obj_dfm2DayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(conString)
+obj_dfm2DayaheadForecastedDemandFetchRepo = Dfm2DayaheadForecastedDemandFetchRepo(conString)
 
 
 @app.route('/api/<entityTag>/<startTime>/<endTime>')
@@ -73,7 +74,6 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
 
 @app.route('/api/dfm2/<entityTag>/<startTime>/<endTime>')
 def dfm2DataApi(entityTag: str, startTime: str, endTime: str):
-    print("akash")
     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
     
@@ -106,7 +106,7 @@ def dfm2DataApi(entityTag: str, startTime: str, endTime: str):
     return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast} )
 @app.route('/')
 def home():
-    return render_template('home.html.j2')
+    return render_template('home.html.j2', errorPortalUrl = errorPortalUrl)
 
 @app.route('/dfm2Home')
 def aiHome():
@@ -115,6 +115,6 @@ def aiHome():
 if __name__ == '__main__':
     serverMode: str = appConfig['mode']
     if serverMode.lower() == 'd':
-        app.run(host="localhost", port=int(appConfig['flaskPort']), debug=True)
+        app.run(host="0.0.0.0", port=int(appConfig['flaskPort']), debug=True)
     # else:
     #     serve(app, host='0.0.0.0', port=int(appConfig['flaskPort']), threads=1)

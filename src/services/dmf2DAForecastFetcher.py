@@ -4,7 +4,7 @@ import datetime as dt
 from typing import List, Tuple, Union
 
 
-class DayaheadForecastedDemandFetchRepo():
+class Dfm2DayaheadForecastedDemandFetchRepo():
     """block wise forecasted demand fetch repository for R0A
     """
 
