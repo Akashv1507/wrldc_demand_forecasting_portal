@@ -1,7 +1,7 @@
 import pandas as pd
 import datetime as dt
 from typing import List, Tuple, TypedDict, Union
-from src.services.scadaApiFetcher import ScadaApiFetcher
+from src.services.actualDemandFetch.scadaApiFetcher import ScadaApiFetcher
 
 class DemandFetchFromApi():
     """class to fetch demand data frrom api, applly filtering, return blockwise demand data

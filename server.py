@@ -5,11 +5,12 @@ from src.config.appConfig import getConfig
 from flask import Flask, request, jsonify, render_template
 import datetime as dt
 from typing import List, Tuple, TypedDict, Union
-from src.services.todayActualDemandFetcher import DemandFetchFromApi
-from src.services.intradayForecastedDemandFetcher import IntradayForecastedDemandFetchRepo
-from src.services.dayaheadForecastFetcher import DayaheadForecastedDemandFetchRepo
-from src.services.prevActualDemandFetcher import PreviousDayDemandFetchRepo
-from src.services.dmf2DAForecastFetcher import Dfm2DayaheadForecastedDemandFetchRepo
+from src.services.actualDemandFetch.todayActualDemandFetcher import DemandFetchFromApi
+from src.services.dfm1Fetchers.intradayForecastedDemandFetcher import IntradayForecastedDemandFetchRepo
+from src.services.dfm1Fetchers.dayaheadForecastFetcher import DayaheadForecastedDemandFetchRepo
+from src.services.actualDemandFetch.prevActualDemandFetcher import PreviousDayDemandFetchRepo
+from src.services.dfm2Fetchers.dfm2DAForecastFetcher import Dfm2DayaheadForecastedDemandFetchRepo
+from src.services.dfm2Fetchers.dfm2IntradayForecastedDemandFetcher import Dfm2IntradayForecastedDemandFetchRepo
 # from src.services.biasErrorCalculator import calculateBiasError
 
 app = Flask(__name__)
@@ -26,14 +27,15 @@ clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
 errorPortalUrl :str = appConfig['errorPortalUrl']
 
-#dmf1 objects of fetchers
+#dfm1 objects of fetchers
 obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
 obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(conString)
 obj_dayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(conString)
 obj_previousDayDemandFetchRepo = PreviousDayDemandFetchRepo(conString)
 
-#dmf2 objects of fetchers
+#dfm2 objects of fetchers
 obj_dfm2DayaheadForecastedDemandFetchRepo = Dfm2DayaheadForecastedDemandFetchRepo(conString)
+obj_dfm2IntradayForecastedDemandFetchRepo = Dfm2IntradayForecastedDemandFetchRepo(conString)
 
 
 @app.route('/api/<entityTag>/<startTime>/<endTime>')
@@ -86,7 +88,7 @@ def dfm2DataApi(entityTag: str, startTime: str, endTime: str):
     endTime = endTime + dt.timedelta(hours= 23, minutes=59)
     
     # today intraday forecast fetch
-    # intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_intradayForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_dfm2IntradayForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
     
     #today dayahead forecast fetch
     todayDaForecast :List[Union[dt.datetime, float]] = obj_dfm2DayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
@@ -102,8 +104,8 @@ def dfm2DataApi(entityTag: str, startTime: str, endTime: str):
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
     prevDayActualDemand : List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(startTime, endTime, entityTag)
     
-    
-    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast} )
+    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast} )
+
 @app.route('/')
 def home():
     return render_template('home.html.j2', errorPortalUrl = errorPortalUrl)
@@ -115,6 +117,6 @@ def aiHome():
 if __name__ == '__main__':
     serverMode: str = appConfig['mode']
     if serverMode.lower() == 'd':
-        app.run(host="0.0.0.0", port=int(appConfig['flaskPort']), debug=True)
+        app.run(host="localhost", port=int(appConfig['flaskPort']), debug=True)
     # else:
     #     serve(app, host='0.0.0.0', port=int(appConfig['flaskPort']), threads=1)

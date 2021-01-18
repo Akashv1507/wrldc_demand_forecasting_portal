@@ -63,20 +63,21 @@ const refreshData = async () =>{
               },
             visible: "legendonly",  
         }
-        // let intradayForecastedDemandTrace:PlotTrace ={
-        //     name : "Forecasted Demand",
-        //     line: {
-        //         width: 3
-        //       },
+        let intradayForecastedDemandTrace:PlotTrace ={
+            name : "Forecasted Demand",
+            line: {
+                width: 3
+              },
             
-        //     data : convertToIst(fetchedData.intradayForecastedDemand)   
-        // }
+            data : convertToIst(fetchedData.intradayForecastedDemand)   
+        }
         let todayDaforecastedDemandTrace:PlotTrace ={
             name : " Today Day-Ahead Forecast",
             data : convertToIst(fetchedData.todayDaForecast),
             line: {
                 width: 3
-              }    
+              }  ,
+            visible: "legendonly"
         }
         let tommDaforecastedDemandTrace:PlotTrace ={
             name : " Tommorow Day-Ahead Forecast",
@@ -96,9 +97,9 @@ const refreshData = async () =>{
         //     data : convertToIst(fetchedData.percentageBiasError)
         // }
         plotData.traces.push(todayActualDemandTrace);
-        // plotData.traces.push(intradayForecastedDemandTrace);
-        plotData.traces.push(todayDaforecastedDemandTrace);
+        plotData.traces.push(intradayForecastedDemandTrace);
         plotData.traces.push(yestActualDemandTrace);
+        plotData.traces.push(todayDaforecastedDemandTrace);
         plotData.traces.push(tommDaforecastedDemandTrace);
         // plotData.traces.push(percentageBiasErrorTrace)
         setPlotTraces(tracePnt[traceInd].divName, plotData);
@@ -110,13 +111,13 @@ const refreshData = async () =>{
         const currDate = ensureTwoDigits(startTime.getDate())
         const currMonth = ensureTwoDigits(startTime.getMonth()+1)
         const currYear = ensureTwoDigits(startTime.getFullYear())
-        console.log(blockNo)
+        
         const currDemand:[Date, number] =fetchedData.todayActualDemand[fetchedData.todayActualDemand.length-1]
         const currHrs = ensureTwoDigits(currDemand[0].getHours())
         const currMin = ensureTwoDigits(currDemand[0].getMinutes())
         const demand= Math.round(currDemand[1])
         
-        const currForecastedDemand:[Date, number] = fetchedData.todayDaForecast[blockNo-1]
+        const currForecastedDemand:[Date, number] = fetchedData.intradayForecastedDemand[blockNo-1]
         const forecast = Math.round(currForecastedDemand[1])
 
         const percentageError = (((demand-forecast)/demand)*100).toFixed(2)
