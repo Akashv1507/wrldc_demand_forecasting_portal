@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WRLDC Actual Demand vs Forecasted Demand</title>
+    <title>WRLDC Actual Demand vs Forecasted Demand AI Model</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" />
 </head>
 
@@ -20,19 +20,13 @@
         </div>
         </div>
         </div> #}
-        <div align ="center" class=" mb-3 ml-5 mt-3" >
+        <div align ="center" class=" mb-3 ml-5 container mt-3" >
             <div class="row">
-                <div class="col-md-3">
-                    <button id="refreshBtn" type="button" class="btn btn-secondary btn-lg" style="width:75%"> Refresh Page </button>
+                <div class="col-md-6">
+                    <button id="refreshBtn" type="button" class="btn btn-secondary btn-lg" style="width:50%"> Refresh Page </button>
                 </div>
-                <div class="col-md-3">
-                    <a id = "switchDfm2Btn" class="btn btn-info btn-lg" href="/dfm2Home" role="button" style="width:75%">MLR Model</a>
-                </div>
-                <div class="col-md-3">
-                    <a id = "switchDfm3Btn" class="btn btn-info btn-lg" href="/" role="button" style="width:75%">MLR(Weather) Model</a>
-                </div>
-                <div class="col-md-3">
-                    <a id="errorPortalBtn" type="button" class="btn btn-secondary btn-lg" role="button" href="http://10.2.100.56:8091/display" style="width:75%">More Information </a>
+                <div class="col-md-6">
+                    <a id = "switchStatisticalBtn" class="btn btn-info btn-lg" href="/" role="button" style="width:50%">Switch To Statistical Model</a>
                 </div>
             </div>
         </div>
@@ -63,7 +57,7 @@
 
     </div>
     <script src="{{ url_for('static', filename='node_modules/plotly.js-dist/plotly.js') }}"></script>
-    <script src="{{ url_for('static', filename='dist/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='dist/dfm2Main.js') }}"></script>
     <style>
         #wrTotalDiv,
         #mahDiv, #guzDiv,#mpDiv, #chattDiv, #goaDiv, #ddDiv, #dnhDiv {

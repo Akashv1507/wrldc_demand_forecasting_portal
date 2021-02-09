@@ -11,6 +11,7 @@ from src.services.dfm1Fetchers.dayaheadForecastFetcher import DayaheadForecasted
 from src.services.actualDemandFetch.prevActualDemandFetcher import PreviousDayDemandFetchRepo
 from src.services.dfm2Fetchers.dfm2DAForecastFetcher import Dfm2DayaheadForecastedDemandFetchRepo
 from src.services.dfm2Fetchers.dfm2IntradayForecastedDemandFetcher import Dfm2IntradayForecastedDemandFetchRepo
+from src.routeControllers.dfm3ApiController import dfm3ApiController
 # from src.services.biasErrorCalculator import calculateBiasError
 
 app = Flask(__name__)
@@ -37,6 +38,8 @@ obj_previousDayDemandFetchRepo = PreviousDayDemandFetchRepo(conString)
 obj_dfm2DayaheadForecastedDemandFetchRepo = Dfm2DayaheadForecastedDemandFetchRepo(conString)
 obj_dfm2IntradayForecastedDemandFetchRepo = Dfm2IntradayForecastedDemandFetchRepo(conString)
 
+#registering blueprints
+app.register_blueprint(dfm3ApiController, url_prefix='/api/dfm3')
 
 @app.route('/api/<entityTag>/<startTime>/<endTime>')
 def deviceDataApi(entityTag: str, startTime: str, endTime: str):
@@ -111,12 +114,16 @@ def home():
     return render_template('home.html.j2', errorPortalUrl = errorPortalUrl)
 
 @app.route('/dfm2Home')
-def aiHome():
+def dfm2Home():
     return render_template('dfm2Home.html.j2')
+
+@app.route('/dfm3Home')
+def dfm3Home():
+    return render_template('dfm3Home.html.j2')
 
 if __name__ == '__main__':
     serverMode: str = appConfig['mode']
     if serverMode.lower() == 'd':
-        app.run(host="0.0.0.0", port=int(appConfig['flaskPort']), debug=True)
+        app.run(host="localhost", port=int(appConfig['flaskPort']), debug=True)
     # else:
     #     serve(app, host='0.0.0.0', port=int(appConfig['flaskPort']), threads=1)

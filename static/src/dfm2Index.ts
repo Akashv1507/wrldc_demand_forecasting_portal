@@ -12,13 +12,13 @@ tommDaForecast:[Date, number][];
 }
 
 const wrTotal = { tagId: "WRLDCMP.SCADA1.A0047000" , tagName: "WR Actual vs Forecasted Demand (MLR)" , divName:'wrTotalDiv',divNameActDem:'wrTotalActualDiv', spanName:'wrTotalSpan', blockNoSpan : 'wrBlockNoSpan', infoName : 'WR'};
-const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand" , divName:'mahDiv' ,divNameActDem:'mahActualhDiv', spanName:'mahSpan', blockNoSpan : 'mahBlockNoSpan', infoName : 'Mah'};
-const gujrat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand" , divName:'gujDiv', divNameActDem:'gujActualDiv', spanName:'gujSpan', blockNoSpan : 'gujBlockNoSpan', infoName : 'Guj'};
-const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand" , divName:'mpDiv', divNameActDem:'mpActualDiv',  spanName:'mpSpan', blockNoSpan : 'mpBlockNoSpan', infoName : 'MP'};
-const chattisgarh = { tagId: "WRLDCMP.SCADA1.A0046945" , tagName: "Chattisgarh Actual vs Forecasted Demand" , divName:'chattDiv' , divNameActDem:'chattActualDiv',  spanName:'chattSpan', blockNoSpan : 'chattBlockNoSpan', infoName : 'Chatt'};
-const goa = { tagId: "WRLDCMP.SCADA1.A0046962" , tagName: "Goa Actual vs Forecasted Demand" , divName:'goaDiv', divNameActDem:'goaActualDiv',  spanName:'goaSpan', blockNoSpan : 'goaBlockNoSpan', infoName : 'Goa'};
-const dd = { tagId: "WRLDCMP.SCADA1.A0046948" , tagName: "Daman & Diu Actual vs Forecasted Demand" , divName:'ddDiv', divNameActDem:'ddActualDiv',  spanName:'ddSpan', blockNoSpan : 'ddBlockNoSpan', infoName : 'DD'};
-const dnh  = { tagId: "WRLDCMP.SCADA1.A0046953" , tagName: "Dadar Nagar Haweli Actual vs Forecasted Demand" , divName:'dnhDiv', divNameActDem:'dnhActualDiv',  spanName:'dnhSpan', blockNoSpan : 'dnhBlockNoSpan', infoName : 'DNH'};
+const maharastra = { tagId: "WRLDCMP.SCADA1.A0046980" , tagName: "Maharastra Actual vs Forecasted Demand  (MLR)" , divName:'mahDiv' ,divNameActDem:'mahActualhDiv', spanName:'mahSpan', blockNoSpan : 'mahBlockNoSpan', infoName : 'Mah'};
+const gujarat = { tagId: "WRLDCMP.SCADA1.A0046957" , tagName: "Gujrat Actual vs Forecasted Demand (MLR)" , divName:'gujDiv', divNameActDem:'gujActualDiv', spanName:'gujSpan', blockNoSpan : 'gujBlockNoSpan', infoName : 'Guj'};
+const madhyaPradesh = { tagId: "WRLDCMP.SCADA1.A0046978" , tagName: "Madhya-Pradesh Actual vs Forecasted Demand (MLR)" , divName:'mpDiv', divNameActDem:'mpActualDiv',  spanName:'mpSpan', blockNoSpan : 'mpBlockNoSpan', infoName : 'MP'};
+const chattisgarh = { tagId: "WRLDCMP.SCADA1.A0046945" , tagName: "Chattisgarh Actual vs Forecasted Demand (MLR)" , divName:'chattDiv' , divNameActDem:'chattActualDiv',  spanName:'chattSpan', blockNoSpan : 'chattBlockNoSpan', infoName : 'Chatt'};
+const goa = { tagId: "WRLDCMP.SCADA1.A0046962" , tagName: "Goa Actual vs Forecasted Demand (MLR)" , divName:'goaDiv', divNameActDem:'goaActualDiv',  spanName:'goaSpan', blockNoSpan : 'goaBlockNoSpan', infoName : 'Goa'};
+const dd = { tagId: "WRLDCMP.SCADA1.A0046948" , tagName: "Daman & Diu Actual vs Forecasted Demand (MLR)" , divName:'ddDiv', divNameActDem:'ddActualDiv',  spanName:'ddSpan', blockNoSpan : 'ddBlockNoSpan', infoName : 'DD'};
+const dnh  = { tagId: "WRLDCMP.SCADA1.A0046953" , tagName: "Dadar Nagar Haweli Actual vs Forecasted Demand (MLR)" , divName:'dnhDiv', divNameActDem:'dnhActualDiv',  spanName:'dnhSpan', blockNoSpan : 'dnhBlockNoSpan', infoName : 'DNH'};
 
 let intervalID = null
 
@@ -37,7 +37,7 @@ const refreshData = async () =>{
     startTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), 0, 0, 0);
     const endTime = nowTime
     // const tracePnt = [wrTotal, maharastra, gujrat, madhyaPradesh, chattisgarh, goa, dd, dnh]
-    const tracePnt = [wrTotal]
+    const tracePnt = [wrTotal, maharastra, gujarat, madhyaPradesh ]
 
     for(let traceInd=0; traceInd< tracePnt.length; traceInd++){
 
@@ -47,6 +47,7 @@ const refreshData = async () =>{
         }
         let fetchedData: DataFromApi = await getActualForecastedDemand(tracePnt[traceInd].tagId, startTime, endTime)
         
+
         let todayActualDemandTrace:PlotTrace ={
             name : "Actual Demand",
             data : convertToIst(fetchedData.todayActualDemand),
