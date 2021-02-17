@@ -20,39 +20,130 @@
         </div>
         </div>
         </div> #}
-        <div align ="center" class=" mb-3 ml-5 container mt-3" >
-            <div class="row">
-                <div class="col-md-6">
-                    <button id="refreshBtn" type="button" class="btn btn-secondary btn-lg" style="width:50%"> Refresh Page </button>
-                </div>
-                <div class="col-md-6">
-                    <a id = "switchStatisticalBtn" class="btn btn-info btn-lg" href="/" role="button" style="width:50%">Switch To Statistical Model</a>
+        <div class="row justify-content-end mt-1">
+            <div class="col-md-3 col-md-offset-3">  
+                <button id="refreshBtn" type="button" class="btn btn-dark btn-lg active " style="width:100%"> MLR Model-Refresh </button>
+            </div>
+            <div class="col-md-6">
+                <div class="row justify-content-end ">
+                    <div class="col-md-4">    
+                        <a id = "switchDfm2Btn" class="btn btn-info " href="/" role="button" style="width:90%">Mathematical Model</a>  
+                    </div>
+                    <div class="col-md-4">  
+                        <a id = "switchDfm3Btn" class="btn btn-secondary" href="/dfm3Home" role="button" style="width:90%">MLR(Weather) Model</a>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md-4">  
+                        <a id = "switchDfm3Btn" class="btn btn-secondary disabled" href="/dfm4Home" role="button" style="width:90%">MLP Model</a>
+                    </div>
+                    <div class="col-md-4">    
+                        <a id="errorPortalBtn" type="button" class="btn btn-info  " role="button" href="http://10.2.100.56:8091/display" style="width:90%">More Information </a> 
+                    </div>
                 </div>
             </div>
         </div>
         
-        <div class="container mb-5"><span id= "wrTotalSpan" class="text-dark "></span><span id= "wrBlockNoSpan"class="text-dark rightSpan"></span></div><div id='wrTotalDiv'></div><div id='wrTotalActualDiv'></div>
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "wrTotalSpan">
+                </div>
+                <div class="form-group col-4" id= "wrBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='wrTotalDiv'></div>
+        <div id='wrTotalActualDiv'></div>
         <br />
         <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "mahSpan"class="text-dark "></span><span id= "mahBlockNoSpan"class="text-dark rightSpan"></span></div><div id='mahDiv'></div><div id='mahActualhDiv'></div>
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "mahSpan">
+                </div>
+                <div class="form-group col-4" id= "mahBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='mahDiv'></div>
+        <div id='mahActualhDiv'></div>
+        <br/>
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "gujSpan">
+                </div>
+                <div class="form-group col-4" id= "gujBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='gujDiv'></div>
+        <div id='gujActualDiv'></div>
         <br />
         <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "gujSpan"class="text-dark "></span><span id= "gujBlockNoSpan"class="text-dark rightSpan"></span></div><div id='gujDiv'></div><div id='gujActualDiv'></div>
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "mpSpan">
+                </div>
+                <div class="form-group col-4" id= "mpBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='mpDiv'></div>
+        <div id='mpActualDiv'></div>
         <br />
         <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "mpSpan"class="text-dark "></span><span id= "mpBlockNoSpan"class="text-dark rightSpan"></span> </div><div id='mpDiv'></div><div id='mpActualDiv'></div>
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "chattSpan">
+                </div>
+                <div class="form-group col-4" id= "chattBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='chattDiv'></div>
+        <div id='chattActualDiv'></div>
         <br />
         <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "chattSpan"class="text-dark "></span><span id= "chattBlockNoSpan"class="text-dark rightSpan"></span></div><div id='chattDiv'></div><div id='chattActualDiv'></div>
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "goaSpan">
+                </div>
+                <div class="form-group col-4" id= "goaBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='goaDiv'></div>
+        <div id='goaActualDiv'></div>
         <br />
         <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "goaSpan"class="text-dark "></span><span id= "goaBlockNoSpan"class="text-dark rightSpan"></span></div><div id='goaDiv'></div><div id='goaActualDiv'></div>
+       
+       <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "ddSpan">
+                </div>
+                <div class="form-group col-4" id= "ddBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='ddDiv'></div>
+        <div id='ddActualDiv'></div> 
         <br />
         <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "ddSpan"class="text-dark "></span><span id= "ddBlockNoSpan"class="text-dark rightSpan"></span></div><div id='ddDiv'></div><div id='ddActualDiv'></div>
-        <br />
-        <hr class ="hrStyle">
-        <div class="container mb-5"><span id= "dnhSpan"class="text-dark "></span><span id= "dnhBlockNoSpan"class="text-dark rightSpan"></span></div><div id='dnhDiv'></div><div id='dnhActualDiv'></div>
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "dnhBlockNoSpan">
+                </div>
+                <div class="form-group col-4" id= "ddBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='dnhDiv'></div>
+        <div id='dnhActualDiv'></div>         
         
 
     </div>
@@ -70,9 +161,8 @@
         box-shadow: 0 10px 10px -10px #8c8b8b inset;
          }
 
-         .rightSpan{
-             float:right;
-             font-size: 22px;
+          #wrTotalSpan,#wrBlockNoSpan,#mahBlockNoSpan,#mahSpan,#gujSpan,#gujBlockNoSpan,#mpSpan,#mpBlockNoSpan,#chattSpan,#chattBlockNoSpan,#goaSpan,#goaBlockNoSpan,#ddSpan,#ddBlockNoSpan,#dnhSpan,#dnhBlockNoSpan{
+             font-size: 25px;
          }
     </style>
 </body>

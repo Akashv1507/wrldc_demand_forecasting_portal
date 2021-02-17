@@ -28,10 +28,11 @@ export const getPlotXYArrays = (measData: PlotTrace["data"]): { timestamps: Date
 export const setPlotTraces = (divId: string, plotData: PlotData) => {
     let traceData = [];
     const layout = {
+        
         title:{
             text:plotData.title,
             font: {
-              size: 24
+              size: 36
             }
           }, 
         // plot_bgcolor:"black",
@@ -44,7 +45,7 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             size: 15,
           }},
 
-        autosize: false,
+        autosize: true,
         height: 600,
         width: 1500,
         xaxis:{
@@ -54,7 +55,7 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             spikethickness:1,
             showline: true,
             titlefont: {color: '#000', size: 22},
-            tickfont: {color: '#000'},
+            tickfont: {color: '#000', size: 15},
             tickmode: "linear",
             // tick0: startTime,
            dtick: 15 * 60 * 1000 ,
@@ -70,7 +71,7 @@ export const setPlotTraces = (divId: string, plotData: PlotData) => {
             spikethickness:1,
             showline: true,
             titlefont: {color: '#000'},
-            tickfont: {color: '#000'},
+            tickfont: {color: '#000', size: 18},
             tickformat: "digits",       
        },
     

@@ -1,5 +1,5 @@
 import {PlotData, PlotTrace, setPlotTraces } from './plotUtils'
-import {getActualForecastedDemand} from './dfm2Actual&ForecastedApiUtils'
+import {getActualForecastedDemand} from './dfm3Actual&ForecastedApiUtils'
 import {addOneDayTime, convertToIst, getBlockNo, subtractOneDayTime, ensureTwoDigits} from './timeUtils'
 
 export interface DataFromApi{
@@ -37,7 +37,7 @@ const refreshData = async () =>{
     startTime = new Date(startTime.getFullYear(), startTime.getMonth(), startTime.getDate(), 0, 0, 0);
     const endTime = nowTime
     // const tracePnt = [wrTotal, maharastra, gujrat, madhyaPradesh, chattisgarh, goa, dd, dnh]
-    const tracePnt = [wrTotal, maharastra, gujarat, madhyaPradesh ]
+    const tracePnt = [wrTotal]
 
     for(let traceInd=0; traceInd< tracePnt.length; traceInd++){
 

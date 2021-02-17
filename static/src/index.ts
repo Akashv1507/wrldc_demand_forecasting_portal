@@ -49,7 +49,7 @@ const refreshData = async () =>{
             name : "Actual Demand",
             data : convertToIst(fetchedData.todayActualDemand),
             line: {
-                width: 3
+                width: 8
               }  
         }
         
@@ -57,14 +57,14 @@ const refreshData = async () =>{
             name : "Yesterday Actual Demand",
             data : addOneDayTime(convertToIst(fetchedData.prevDayActualDemand)),
             line: {
-                width: 3
+                width: 8
               },
             visible: "legendonly",  
         }
         let intradayForecastedDemandTrace:PlotTrace ={
             name : "Forecasted Demand",
             line: {
-                width: 3
+                width: 8
               },
             
             data : convertToIst(fetchedData.intradayForecastedDemand)   
@@ -73,14 +73,14 @@ const refreshData = async () =>{
             name : " Today Day-Ahead Forecast",
             data : convertToIst(fetchedData.todayDaForecast),
             line: {
-                width: 3
+                width: 8
               },
             visible: "legendonly"    
         }
         let tommDaforecastedDemandTrace:PlotTrace ={
             name : " Tommorow Day-Ahead Forecast",
             line: {
-                width: 3
+                width: 8
               },
             visible: "legendonly",
             data : subtractOneDayTime(convertToIst(fetchedData.tommDaForecast))   
@@ -133,7 +133,7 @@ const refreshData = async () =>{
             name : "Yestrerday Actual Demand",
             data : fetchedData.prevDayActualDemand , 
             line: {
-                width: 3
+                width: 8
               } 
         };
         

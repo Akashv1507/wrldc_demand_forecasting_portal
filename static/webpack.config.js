@@ -5,6 +5,7 @@ module.exports = {
     entry: {
         main: ['babel-polyfill', path.resolve(__dirname, 'src/index.ts')],
         dfm2Main: ['babel-polyfill', path.resolve(__dirname, 'src/dfm2Index.ts')],
+        dfm3Main: ['babel-polyfill', path.resolve(__dirname, 'src/dfm3Index.ts')]
     },
 
     output: {

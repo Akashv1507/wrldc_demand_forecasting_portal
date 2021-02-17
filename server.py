@@ -26,100 +26,119 @@ apiBaseUrl: str = appConfig['apiBaseUrl']
 clientId: str = appConfig['clientId']
 clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
-errorPortalUrl :str = appConfig['errorPortalUrl']
+errorPortalUrl: str = appConfig['errorPortalUrl']
 
-#dfm1 objects of fetchers
-obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
-obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(conString)
-obj_dayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(conString)
+# dfm1 objects of fetchers
+obj_demandFetchFromApi = DemandFetchFromApi(
+    tokenUrl, apiBaseUrl, clientId, clientSecret)
+obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(
+    conString)
+obj_dayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(
+    conString)
 obj_previousDayDemandFetchRepo = PreviousDayDemandFetchRepo(conString)
 
-#dfm2 objects of fetchers
-obj_dfm2DayaheadForecastedDemandFetchRepo = Dfm2DayaheadForecastedDemandFetchRepo(conString)
-obj_dfm2IntradayForecastedDemandFetchRepo = Dfm2IntradayForecastedDemandFetchRepo(conString)
+# dfm2 objects of fetchers
+obj_dfm2DayaheadForecastedDemandFetchRepo = Dfm2DayaheadForecastedDemandFetchRepo(
+    conString)
+obj_dfm2IntradayForecastedDemandFetchRepo = Dfm2IntradayForecastedDemandFetchRepo(
+    conString)
 
-#registering blueprints
+# registering blueprints
 app.register_blueprint(dfm3ApiController, url_prefix='/api/dfm3')
+
 
 @app.route('/api/<entityTag>/<startTime>/<endTime>')
 def deviceDataApi(entityTag: str, startTime: str, endTime: str):
-    
+
     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
-    
-    todayActualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
 
+    todayActualDemandData: List[Union[dt.datetime, float]
+                                ] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
 
     # setting end time to last minute of a day in case of forecasted demand fetch
     startTime = startDt
     endTime = endDt.replace(hour=0, minute=0, second=0)
-    endTime = endTime + dt.timedelta(hours= 23, minutes=59)
+    endTime = endTime + dt.timedelta(hours=23, minutes=59)
     
     # today intraday forecast fetch
-    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_intradayForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_intradayForecastedDemandFetchRepo.fetchForecastedDemand(
+        startTime, endTime, entityTag)
     
-    #today dayahead forecast fetch
-    todayDaForecast :List[Union[dt.datetime, float]] = obj_dayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    # today dayahead forecast fetch
+    todayDaForecast: List[Union[dt.datetime, float]] = obj_dayaheadForecastedDemandFetchRepo.fetchForecastedDemand(
+        startTime, endTime, entityTag)
     
-    #setting startTime and endTime for tomorrow day ahead forecast fetch.
+    # setting startTime and endTime for tomorrow day ahead forecast fetch.
     startTime = startDt + dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
-    tommDaForecast : List[Union[dt.datetime, float]] = obj_dayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    tommDaForecast: List[Union[dt.datetime, float]] = obj_dayaheadForecastedDemandFetchRepo.fetchForecastedDemand(
+        startTime, endTime, entityTag)
     # print(tommDaForecast[0][0], tommDaForecast[-1][0])
 
     # setting startTime and endTime for prev day actual demand fetch.
     startTime = startDt-dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
-    prevDayActualDemand : List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(startTime, endTime, entityTag)
-    
-    #calculating percentage bias error
+    prevDayActualDemand: List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(
+        startTime, endTime, entityTag)
+
+    # calculating percentage bias error
     # percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(todayActualDemandData, intradayforecastedDemand)
-    
-    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast} )
+
+    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand': prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast': todayDaForecast, 'tommDaForecast': tommDaForecast})
+
 
 @app.route('/api/dfm2/<entityTag>/<startTime>/<endTime>')
 def dfm2DataApi(entityTag: str, startTime: str, endTime: str):
     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
-    
-    todayActualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
 
+    todayActualDemandData: List[Union[dt.datetime, float]
+                                ] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
 
     # setting end time to last minute of a day in case of forecasted demand fetch
     startTime = startDt
     endTime = endDt.replace(hour=0, minute=0, second=0)
-    endTime = endTime + dt.timedelta(hours= 23, minutes=59)
-    
+    endTime = endTime + dt.timedelta(hours=23, minutes=59)
+
     # today intraday forecast fetch
-    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_dfm2IntradayForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
-    
-    #today dayahead forecast fetch
-    todayDaForecast :List[Union[dt.datetime, float]] = obj_dfm2DayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
-    
-    #setting startTime and endTime for tomorrow day ahead forecast fetch.
+    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_dfm2IntradayForecastedDemandFetchRepo.fetchForecastedDemand(
+        startTime, endTime, entityTag)
+
+    # today dayahead forecast fetch
+    todayDaForecast: List[Union[dt.datetime, float]] = obj_dfm2DayaheadForecastedDemandFetchRepo.fetchForecastedDemand(
+        startTime, endTime, entityTag)
+
+    # setting startTime and endTime for tomorrow day ahead forecast fetch.
     startTime = startDt + dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
-    tommDaForecast : List[Union[dt.datetime, float]] = obj_dfm2DayaheadForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, entityTag)
+    tommDaForecast: List[Union[dt.datetime, float]] = obj_dfm2DayaheadForecastedDemandFetchRepo.fetchForecastedDemand(
+        startTime, endTime, entityTag)
     # print(tommDaForecast[0][0], tommDaForecast[-1][0])
 
     # setting startTime and endTime for prev day actual demand fetch.
     startTime = startDt-dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
-    prevDayActualDemand : List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(startTime, endTime, entityTag)
-    
-    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand':prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast':todayDaForecast, 'tommDaForecast':tommDaForecast} )
+    prevDayActualDemand: List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(
+        startTime, endTime, entityTag)
+
+    return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand': prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast': todayDaForecast, 'tommDaForecast': tommDaForecast})
+
 
 @app.route('/')
 def home():
-    return render_template('home.html.j2', errorPortalUrl = errorPortalUrl)
+    return render_template('home.html.j2', errorPortalUrl=errorPortalUrl)
+
 
 @app.route('/dfm2Home')
 def dfm2Home():
     return render_template('dfm2Home.html.j2')
 
+
 @app.route('/dfm3Home')
 def dfm3Home():
     return render_template('dfm3Home.html.j2')
+
 
 if __name__ == '__main__':
     serverMode: str = appConfig['mode']
