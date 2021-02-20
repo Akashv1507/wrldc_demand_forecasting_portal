@@ -29,10 +29,8 @@ dfm3ApiController = Blueprint('dfm3ApiController', __name__, template_folder='te
 def dfm3DataApi(entityTag: str, startTime: str, endTime: str):
     startDt = dt.datetime.strptime(startTime, '%Y-%m-%d-%H-%M-%S')
     endDt = dt.datetime.strptime(endTime, '%Y-%m-%d-%H-%M-%S')
-    print("akash fuck you")
+    
     todayActualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startDt, endDt, entityTag)
-
-    print("akash fuck you again")
     # setting end time to last minute of a day in case of forecasted demand fetch
     startTime = startDt
     endTime = endDt.replace(hour=0, minute=0, second=0)
