@@ -124,21 +124,21 @@ const refreshData = async () =>{
         blockNoSpanId.innerHTML = `<b>Date- ${currDate}-${currMonth}-${currYear} <br> Block No. - ${blockNo}<b>`
         spanId.innerHTML = `<b>At ${currHrs}:${currMin} ${infoName} Demand = ${demand} MW  <br> At ${currHrs}:${currMin} ${infoName} Forecast = ${forecast} MW <br> Percentage Error = ${percentageError}%</b>`
 
-        //previous day actual demand on another graph
-        let actualPlotData : PlotData = {
-            title : '',
-            traces : []
-        };
-        let yesterdayActualDemandTrace:PlotTrace ={
-            name : "Yestrerday Actual Demand",
-            data : fetchedData.prevDayActualDemand , 
-            line: {
-                width: 8
-              } 
-        };
+        // //previous day actual demand on another graph removed by management
+        // let actualPlotData : PlotData = {
+        //     title : '',
+        //     traces : []
+        // };
+        // let yesterdayActualDemandTrace:PlotTrace ={
+        //     name : "Yestrerday Actual Demand",
+        //     data : fetchedData.prevDayActualDemand , 
+        //     line: {
+        //         width: 8
+        //       } 
+        // };
         
-        actualPlotData.traces.push(yesterdayActualDemandTrace);
-        setPlotTraces(tracePnt[traceInd].divNameActDem, actualPlotData );
+        // actualPlotData.traces.push(yesterdayActualDemandTrace);
+        // setPlotTraces(tracePnt[traceInd].divNameActDem, actualPlotData );
 
     }
     
