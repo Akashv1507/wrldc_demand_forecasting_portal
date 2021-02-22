@@ -143,6 +143,6 @@ def dfm3Home():
 if __name__ == '__main__':
     serverMode: str = appConfig['mode']
     if serverMode.lower() == 'd':
-        app.run(host="0.0.0.0.", port=int(appConfig['flaskPort']), debug=True)
+        app.run(host="0.0.0.0", port=int(appConfig['flaskPort']), debug=True)
     # else:
     #     serve(app, host='0.0.0.0', port=int(appConfig['flaskPort']), threads=1)
