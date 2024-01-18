@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WRLDC Demand Vs Frequency</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}"
+    />
+  </head>
+
+  <body>
+      {# <div class="row justify-content-center mt-1">
+        <div class="col-md-3 col-md-offset-3">
+          <button
+            id="refreshBtn"
+            type="button"
+            class="btn btn-outline-success btn-lg"
+            style="width: 100%"
+          >
+            Refresh
+          </button>
+        </div>
+      </div> #}
+
+      
+      <div  id="wrDemandDiv"></div>
+      
+
+      <hr class="hrStyle" />
+
+      
+      <div  id="wrFreqDiv"></div>
+     
+      
+    <script src="{{ url_for('static', filename='node_modules/plotly.js-dist/plotly.js') }}"></script>
+    <script src="{{ url_for('static', filename='dist/demandFrequencyMain.js') }}"></script>
+    <style>
+    html, body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+#wrFreqDiv, #wrDemandDiv{
+  height: 50%;
+}
+      
+      .hrStyle {
+        height: 10px;
+        border: 0;
+        box-shadow: 0 10px 10px -10px #8c8b8b inset;
+      }
+    </style>
+  </body>
+</html>

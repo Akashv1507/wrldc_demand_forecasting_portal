@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WRLDC Actual Demand vs Forecasted Demand AI Model</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='node_modules/bootstrap/dist/css/bootstrap.min.css') }}" />
+</head>
+
+<body>
+    <div>
+        {# <div class="input-group mb-3 container mt-3" >
+        <div class="input-group-prepend">
+        <span class="input-group-text text-primary" id="inputGroup-sizing-default" >Days Offset - </span>
+        </div>
+        <input type="number"  id="daysOffsetInp" value="1" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+        <div class="input-group-append">
+        <button id="refreshBtn" type="button" class="btn btn-outline-primary">Refresh</button>
+        </div>
+        </div>
+        </div> #}
+        <div class="row justify-content-end mt-1">
+            <div class="col-md-3 col-md-offset-3">  
+                <button id="refreshBtn" type="button" class="btn btn-dark btn-lg active " style="width:100%"> MLR Model-Refresh </button>
+            </div>
+            <div class="col-md-6">
+                <div class="row justify-content-end ">
+                    <div class="col-md-4">    
+                        <a id = "switchDfm1Btn" class="btn btn-info " href="/" role="button" style="width:90%">Mathematical Model</a>  
+                    </div>
+                    <div class="col-md-4">  
+                        <a id = "switchDfm3Btn" class="btn btn-secondary" href="/dfm3Home" role="button" style="width:90%">MLR(Weather) Model</a>
+                    </div>
+                    <div class="w-100"></div>
+                    <div class="col-md-4">  
+                        <a id = "switchDfm3Btn" class="btn btn-secondary" href="/dfm4Home" role="button" style="width:90%">MLP Model</a>
+                    </div>
+                    <div class="col-md-4">    
+                        <a id="errorPortalBtn" type="button" class="btn btn-info  " role="button" href="http://10.2.100.56:8091/dfm_dashboard" style="width:90%">Data Analysis </a> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "wrTotalSpan">
+                </div>
+                <div class="form-group col-4" id= "wrBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='wrTotalDiv'></div>
+        <div id='wrTotalActualDiv'></div>
+        <br />
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "mahSpan">
+                </div>
+                <div class="form-group col-4" id= "mahBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='mahDiv'></div>
+        <div id='mahActualhDiv'></div>
+        <br/>
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "gujSpan">
+                </div>
+                <div class="form-group col-4" id= "gujBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='gujDiv'></div>
+        <div id='gujActualDiv'></div>
+        <br />
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "mpSpan">
+                </div>
+                <div class="form-group col-4" id= "mpBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='mpDiv'></div>
+        <div id='mpActualDiv'></div>
+        <br />
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "chattSpan">
+                </div>
+                <div class="form-group col-4" id= "chattBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='chattDiv'></div>
+        <div id='chattActualDiv'></div>
+        <br />
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "goaSpan">
+                </div>
+                <div class="form-group col-4" id= "goaBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='goaDiv'></div>
+        <div id='goaActualDiv'></div>
+        <br />
+        <hr class ="hrStyle">
+       
+       <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "ddSpan">
+                </div>
+                <div class="form-group col-4" id= "ddBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='ddDiv'></div>
+        <div id='ddActualDiv'></div> 
+        <br />
+        <hr class ="hrStyle">
+
+        <div class="container mb-5 mt-2">
+            <div class="row justify-content-start">
+                <div class="form-group col-6" id= "dnhBlockNoSpan">
+                </div>
+                <div class="form-group col-4" id= "ddBlockNoSpan">
+                </div>
+            </div>
+        </div>
+        <div id='dnhDiv'></div>
+        <div id='dnhActualDiv'></div>         
+        
+
+    </div>
+    <script src="{{ url_for('static', filename='node_modules/plotly.js-dist/plotly.js') }}"></script>
+    <script src="{{ url_for('static', filename='dist/dfm2Main.js') }}"></script>
+    <style>
+        #wrTotalDiv,
+        #mahDiv, #guzDiv,#mpDiv, #chattDiv, #goaDiv, #ddDiv, #dnhDiv {
+            width: 100%;
+        }
+
+        .hrStyle {
+        height: 10px;
+        border: 0;
+        box-shadow: 0 10px 10px -10px #8c8b8b inset;
+         }
+
+          #wrTotalSpan,#wrBlockNoSpan,#mahBlockNoSpan,#mahSpan,#gujSpan,#gujBlockNoSpan,#mpSpan,#mpBlockNoSpan,#chattSpan,#chattBlockNoSpan,#goaSpan,#goaBlockNoSpan,#ddSpan,#ddBlockNoSpan,#dnhSpan,#dnhBlockNoSpan{
+             font-size: 25px;
+         }
+    </style>
+</body>
+
+</html>
