@@ -1,2 +1,2 @@
 call .venv\Scripts\activate.bat
-call uv run server.py
+call "C:\Users\Administrator\.local\bin\uv.exe" run server.py
