@@ -7,11 +7,12 @@ class FrequencyFetchFromApi():
     """class to fetch frequency data
     """   
 
-    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret):
+    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase):
         self.tokenUrl = tokenUrl
         self.apiBaseUrl = apiBaseUrl
         self.clientId = clientId
         self.clientSecret = clientSecret
+        self.histDataUrlBase = histDataUrlBase
     
     def toListOfTuple(self, df:pd.core.frame.DataFrame) -> List[Union[dt.datetime, float]]:
         """convert freq data to list of list [[timestamp, freqValue],]
@@ -37,11 +38,11 @@ class FrequencyFetchFromApi():
         """
         freqDf = pd.DataFrame(columns =['timestamp','freqValue'])      
         #creating object of ScadaApiFetcher class 
-        obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret)
+        obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret, self.histDataUrlBase)
         
         try:
-            # fetching secondwise data from api for each entity(timestamp,value) and converting to dataframe
-            resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+            # resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+            resData = obj_scadaApiFetcher.fetchScadaPntHistData(entityTag, startTime, endTime, 60)
             freqDf = pd.DataFrame(resData, columns =['timestamp','freqValue'])
             freqDf= freqDf[(freqDf['freqValue']>48) & (freqDf['freqValue']<51.5)]
             # handling errors if actual frequency is not fetched from api.

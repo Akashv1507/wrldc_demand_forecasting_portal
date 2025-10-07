@@ -15,9 +15,10 @@ clientId: str = appConfig['clientId']
 clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
 errorPortalUrl :str = appConfig['errorPortalUrl']
+histDataUrlBase :str = appConfig['histDataUrlBase']
 
 #dfm3 objects of fetchers
-obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
+obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase)
 obj_previousDayDemandFetchRepo = PreviousDayDemandFetchRepo(conString)
 obj_dfm3DayaheadForecastedDemandFetchRepo = Dfm3DayaheadForecastedDemandFetchRepo(conString)
 obj_dfm3IntradayForecastedDemandFetchRepo = Dfm3IntradayForecastedDemandFetchRepo(conString)

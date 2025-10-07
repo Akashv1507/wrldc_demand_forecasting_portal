@@ -1,6 +1,6 @@
 import pandas as pd
 import datetime as dt
-from typing import List, Tuple, TypedDict, Union
+from typing import List, Union
 from src.services.actualDemandFetch.scadaApiFetcher import ScadaApiFetcher
 
 class DemandFetchFromApi():
@@ -10,12 +10,14 @@ class DemandFetchFromApi():
     apiBaseUrl: str = ''
     clientId: str = ''
     clientSecret: str = ''
+    histDataUrlBase: str = ''
 
-    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret):
+    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase):
         self.tokenUrl = tokenUrl
         self.apiBaseUrl = apiBaseUrl
         self.clientId = clientId
         self.clientSecret = clientSecret
+        self.histDataUrlBase = histDataUrlBase
     
     def toMinuteWiseData(self, demandDf:pd.core.frame.DataFrame)->pd.core.frame.DataFrame:
         """convert random secondwise demand dataframe to minwise demand dataframe and add entity column to dataframe.
@@ -110,11 +112,13 @@ class DemandFetchFromApi():
         demandStorageDf = pd.DataFrame(columns = [ 'timestamp','demandValue']) 
               
         #creating object of ScadaApiFetcher class 
-        obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret)
+        obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret, self.histDataUrlBase)
         
         try:
             # fetching secondwise data from api for each entity(timestamp,value) and converting to dataframe
-            resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+            # resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+            #Now using directly edna api 
+            resData = obj_scadaApiFetcher.fetchScadaPntHistData(entityTag, startTime, endTime)
             # getting time upto which data is present, handling errors if actual demand is not fetched from api.
             timeUptodataPresent: dt.datetime = resData[-1][0] 
         except Exception as err:
@@ -159,3 +163,4 @@ class DemandFetchFromApi():
             data : List[Union[dt.datetime, float]] = self.toListOfTuple(demandStorageDf)
        
         return data
+    

@@ -1,4 +1,4 @@
-import cx_Oracle
+import oracledb as cx_Oracle
 import pandas as pd
 import datetime as dt
 from typing import List, Tuple, Union

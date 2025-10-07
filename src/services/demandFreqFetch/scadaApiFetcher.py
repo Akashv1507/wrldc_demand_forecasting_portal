@@ -9,13 +9,15 @@ class ScadaApiFetcher():
     apiBaseUrl: str = ''
     clientId: str = ''
     clientSecret: str = ''
+    histDataUrlBase: str = ''
 
-    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret):
+    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase):
         self.tokenUrl = tokenUrl
         self.apiBaseUrl = apiBaseUrl
         self.clientId = clientId
         self.clientSecret = clientSecret
-
+        self.histDataUrlBase = histDataUrlBase
+        
     def fetchData(self, measId: str, startDt: dt.datetime, endDt: dt.datetime) -> List[Tuple[dt.datetime, float]]:
         """fetches data from scada archive api
 
@@ -64,3 +66,27 @@ class ScadaApiFetcher():
     def convertEpochMsToDt(self, epochMs: float) -> dt.datetime:
         timeObj = dt.datetime.fromtimestamp(epochMs/1000)
         return timeObj
+
+    def fetchScadaPntHistData(self, pntId: str, startTime: dt.datetime, endTime: dt.datetime, samplingSecs: int = 30) -> List[Tuple[str, float]]:
+    
+        pntId = pntId.strip()
+        if pntId == "":
+            return []
+        urlStr = self.histDataUrlBase
+        paramsObj = {"pnt": pntId,
+                    "strtime": startTime.strftime("%d/%m/%Y/%H:%M:%S"),
+                    "endtime": endTime.strftime("%d/%m/%Y/%H:%M:%S"),
+                    "secs": samplingSecs,
+                    "type": 'snap'}
+        try:
+            r = requests.get(url=urlStr, params=paramsObj)
+            data = json.loads(r.text)
+            r.close()
+        except Exception as e:
+            print("Error loading data from scada api")
+            print(e)
+            data = []
+        dataRes: List[Tuple[str, float]] = []
+        for sampl in data:
+            dataRes.append((dt.datetime.strptime(sampl["timestamp"], "%Y-%m-%dT%H:%M:%S") , sampl["dval"]))
+        return dataRes

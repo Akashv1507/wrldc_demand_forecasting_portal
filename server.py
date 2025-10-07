@@ -30,10 +30,11 @@ clientId: str = appConfig['clientId']
 clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
 errorPortalUrl: str = appConfig['errorPortalUrl']
+histDataUrlBase: str = appConfig['histDataUrlBase']
 
 # dfm1 objects of fetchers
 obj_demandFetchFromApi = DemandFetchFromApi(
-    tokenUrl, apiBaseUrl, clientId, clientSecret)
+    tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase)
 obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(
     conString)
 obj_dayaheadForecastedDemandFetchRepo = DayaheadForecastedDemandFetchRepo(
@@ -84,9 +85,9 @@ def deviceDataApi(entityTag: str, startTime: str, endTime: str):
     # setting startTime and endTime for prev day actual demand fetch.
     startTime = startDt-dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
-    prevDayActualDemand: List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(
-        startTime, endTime, entityTag)
-
+    # prevDayActualDemand: List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(startTime, endTime, entityTag)
+    # Now fetching previous day actual demand from scada edna api
+    prevDayActualDemand: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startTime, endTime, entityTag)
     # calculating percentage bias error
     # percentageBiasError: List[Union[dt.datetime, float]] = calculateBiasError(todayActualDemandData, intradayforecastedDemand)
     # print(intradayforecastedDemand)
@@ -124,9 +125,10 @@ def dfm2DataApi(entityTag: str, startTime: str, endTime: str):
     # setting startTime and endTime for prev day actual demand fetch.
     startTime = startDt-dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59)
-    prevDayActualDemand: List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(
-        startTime, endTime, entityTag)
-
+    #Now fetching previous day actual demand from scada edna api
+    # prevDayActualDemand: List[Union[dt.datetime, float]] = obj_previousDayDemandFetchRepo.fetchPrevDemand(
+    #     startTime, endTime, entityTag)
+    prevDayActualDemand: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandDataFromApi(startTime, endTime, entityTag)
     return jsonify({'todayActualDemand': todayActualDemandData, 'prevDayActualDemand': prevDayActualDemand, 'intradayForecastedDemand': intradayforecastedDemand, 'todayDaForecast': todayDaForecast, 'tommDaForecast': tommDaForecast})
 
 
@@ -140,13 +142,13 @@ def dfm2Home():
     return render_template('dfm2Home.html.j2')
 
 
-@app.route('/dfm3Home')
-def dfm3Home():
-    return render_template('dfm3Home.html.j2')
+# @app.route('/dfm3Home')
+# def dfm3Home():
+#     return render_template('dfm3Home.html.j2')
 
-@app.route('/dfm4Home')
-def dfm4Home():
-    return render_template('dfm4Home.html.j2')
+# @app.route('/dfm4Home')
+# def dfm4Home():
+#     return render_template('dfm4Home.html.j2')
 
 @app.route('/demandFrequency')
 def demandFrequency():

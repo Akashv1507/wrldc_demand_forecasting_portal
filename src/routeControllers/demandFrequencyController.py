@@ -14,11 +14,11 @@ clientId: str = appConfig['clientId']
 clientSecret: str = appConfig['clientSecret']
 conString: str = appConfig['con_string_mis_warehouse']
 errorPortalUrl :str = appConfig['errorPortalUrl']
+histDataUrlBase: str = appConfig['histDataUrlBase']
 
-obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
-obj_frequencyFetchFromApi = FrequencyFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret)
-obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(
-    conString)
+obj_demandFetchFromApi = DemandFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase)
+obj_frequencyFetchFromApi = FrequencyFetchFromApi(tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase)
+obj_intradayForecastedDemandFetchRepo = IntradayForecastedDemandFetchRepo(conString)
 demandFreqApiController = Blueprint('demandFreqApiController', __name__, template_folder='templates')
 
 @demandFreqApiController.route('/demandFrequency/<startTime>/<endTime>')
@@ -31,8 +31,7 @@ def demandFreqDataApi(startTime: str, endTime: str):
     todayActualDemandData: List[Union[dt.datetime, float]] = obj_demandFetchFromApi.fetchDemandFromApi(startDt, endDt, demandEntity)
     todayFreq:List[Union[dt.datetime, float]] = obj_frequencyFetchFromApi.fetchFreqFromApi(startDt, endDt, freqEntity)
     # today intraday forecast fetch
-    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_intradayForecastedDemandFetchRepo.fetchForecastedDemand(
-        startTime, endTime, demandEntity)
+    intradayforecastedDemand:  List[Union[dt.datetime, float]] = obj_intradayForecastedDemandFetchRepo.fetchForecastedDemand(startTime, endTime, demandEntity)
     # setting startTime and endTime for prev day.
     startTime = startDt-dt.timedelta(days=1)
     endTime = startTime + dt.timedelta(hours=23, minutes=59, seconds=59)

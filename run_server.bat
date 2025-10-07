@@ -1,2 +1,2 @@
-call project_env\Scripts\activate.bat
-call python server.py
+call .venv\Scripts\activate.bat
+call uv run server.py

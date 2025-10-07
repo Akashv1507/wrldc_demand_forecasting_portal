@@ -7,11 +7,12 @@ class DemandFetchFromApi():
     """class to fetch demand data
     """   
 
-    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret):
+    def __init__(self, tokenUrl, apiBaseUrl, clientId, clientSecret, histDataUrlBase):
         self.tokenUrl = tokenUrl
         self.apiBaseUrl = apiBaseUrl
         self.clientId = clientId
         self.clientSecret = clientSecret
+        self.histDataUrlBase= histDataUrlBase
 
     def toListOfTuple(self, df:pd.core.frame.DataFrame) -> List[Union[dt.datetime, float]]:
         """convert demand data to list of list [[timestamp, demandValue],]
@@ -38,10 +39,11 @@ class DemandFetchFromApi():
 
         demandDf = pd.DataFrame(columns = [ 'timestamp','demandValue'])      
         #creating object of ScadaApiFetcher class 
-        obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret)
+        obj_scadaApiFetcher = ScadaApiFetcher(self.tokenUrl, self.apiBaseUrl, self.clientId, self.clientSecret, self.histDataUrlBase)
         
         try:
-            resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+            # resData = obj_scadaApiFetcher.fetchData(entityTag, startTime, endTime)
+            resData = obj_scadaApiFetcher.fetchScadaPntHistData(entityTag, startTime, endTime, 60)
             demandDf = pd.DataFrame(resData, columns =['timestamp','demandValue'])
             demandDf = demandDf[demandDf['demandValue']>1000]
             # handling errors if actual demand is not fetched from api.
